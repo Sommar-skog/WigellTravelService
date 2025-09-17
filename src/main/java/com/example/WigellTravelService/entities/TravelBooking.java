@@ -14,7 +14,10 @@ public class TravelBooking {
     private Long bookingId;
 
     @Column(nullable = false)
-    private LocalDate departureDate;
+    private LocalDate startDate;
+
+    @Column(nullable = false)
+    private LocalDate endDate;
 
     @Column(nullable = false)
     private int numberOfWeeks;
@@ -45,12 +48,19 @@ public class TravelBooking {
         this.bookingId = bookingId;
     }
 
-    public LocalDate getDepartureDate() {
-        return departureDate;
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
-    public void setDepartureDate(LocalDate departureDate) {
-        this.departureDate = departureDate;
+    public void setStartDate(LocalDate departureDate) {
+        this.startDate = departureDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
     public int getNumberOfWeeks() {
@@ -97,7 +107,8 @@ public class TravelBooking {
     public String toString() {
         return "TravelBooking{" +
                 "bookingId=" + bookingId +
-                ", departureDate=" + departureDate +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
                 ", totalPrice=" + totalPrice +
                 ", cancelled=" + cancelled +
                 ", customer=" + customer +
