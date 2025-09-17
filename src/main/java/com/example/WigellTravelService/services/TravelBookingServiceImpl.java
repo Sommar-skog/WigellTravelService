@@ -5,6 +5,7 @@ import com.example.WigellTravelService.repositories.TravelBookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -46,7 +47,12 @@ public class TravelBookingServiceImpl implements TravelBookingService {
 
     @Override
     public List<TravelBooking> listPastBookings() {
-        //kontrollera bokningsdatum och längd för att se när slutdatum för resan är och om detta är paserat är det pastBookings
         return List.of();
     }
+
+    private LocalDate getTripEndDate(LocalDate startDate, int weeks) {
+        return startDate.plusWeeks(weeks);
+    }
+
+    private
 }
