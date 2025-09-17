@@ -13,4 +13,10 @@ public interface TravelBookingService {
     TravelBooking cancelTrip(TravelBooking travelBooking);
 
     List<TravelBooking> getMyBookings();
+
+    List<TravelBooking> listCanceledBookings();
+
+    List<TravelBooking> listUpcomingBookings();
+
+    List<TravelBooking> listPastBookings();
 }
