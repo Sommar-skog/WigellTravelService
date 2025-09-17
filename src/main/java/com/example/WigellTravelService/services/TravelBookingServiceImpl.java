@@ -1,5 +1,6 @@
 package com.example.WigellTravelService.services;
 
+import com.example.WigellTravelService.dtos.CreateBookingDTO;
 import com.example.WigellTravelService.entities.TravelBooking;
 import com.example.WigellTravelService.repositories.TravelBookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,8 @@ public class TravelBookingServiceImpl implements TravelBookingService {
     //TODO kom ihåg DTOs!
 
     @Override
-    public TravelBooking bookTrip(TravelBooking travelBooking) {
+    public TravelBooking bookTrip(CreateBookingDTO createBookingDTO) {
+
         return null;
     }
 
@@ -54,5 +56,4 @@ public class TravelBookingServiceImpl implements TravelBookingService {
         return startDate.plusWeeks(weeks);
     }
 
-    private
 }
