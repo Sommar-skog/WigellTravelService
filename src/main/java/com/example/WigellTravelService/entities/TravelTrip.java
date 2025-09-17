@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-public class Trip {
+public class TravelTrip {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,7 +54,7 @@ public class Trip {
 
     @Override
     public String toString() {
-        return "Trip{" +
+        return "TravelTrip{" +
                 "tripId=" + tripId +
                 ", hotellName='" + hotellName + '\'' +
                 ", destination='" + destination + '\'' +
