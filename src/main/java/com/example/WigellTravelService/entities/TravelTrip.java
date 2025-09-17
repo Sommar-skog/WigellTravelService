@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
+@Table(name = "travel_trip")
 public class TravelTrip {
 
     @Id
@@ -12,13 +13,17 @@ public class TravelTrip {
     private Long tripId;
 
     @Column(nullable = false, length = 50)
-    private String hotellName;
+    private String hotelName;
 
     @Column(nullable = false, length = 50)
     private String destination;
 
     @Column(nullable = false, precision = 7, scale = 2)
-    private BigDecimal price;
+    private BigDecimal weekPrice;
+
+    public TravelTrip() {
+
+    }
 
     public Long getTripId() {
         return tripId;
@@ -28,12 +33,12 @@ public class TravelTrip {
         this.tripId = tripId;
     }
 
-    public String getHotellName() {
-        return hotellName;
+    public String getHotelName() {
+        return hotelName;
     }
 
-    public void setHotellName(String hotellName) {
-        this.hotellName = hotellName;
+    public void setHotelName(String hotellName) {
+        this.hotelName = hotellName;
     }
 
     public String getDestination() {
@@ -44,21 +49,21 @@ public class TravelTrip {
         this.destination = destination;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public BigDecimal getWeekPrice() {
+        return weekPrice;
     }
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
+    public void setWeekPrice(BigDecimal price) {
+        this.weekPrice = price;
     }
 
     @Override
     public String toString() {
         return "TravelTrip{" +
                 "tripId=" + tripId +
-                ", hotellName='" + hotellName + '\'' +
+                ", hotelName='" + hotelName + '\'' +
                 ", destination='" + destination + '\'' +
-                ", price=" + price +
+                ", weekPrice=" + weekPrice +
                 '}';
     }
 }

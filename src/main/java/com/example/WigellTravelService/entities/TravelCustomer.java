@@ -2,8 +2,11 @@ package com.example.WigellTravelService.entities;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
-public class TravelCustomers {
+@Table(name = "travel_customer")
+public class TravelCustomer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,6 +20,13 @@ public class TravelCustomers {
 
     @Column(nullable = false, length = 50)
     private String password;
+
+    @OneToMany(mappedBy = "customer")
+    private List<TravelBooking> bookingList;
+
+    public TravelCustomer() {
+
+    }
 
     public Long getCustomerId() {
         return customerId;
@@ -50,13 +60,22 @@ public class TravelCustomers {
         this.password = password;
     }
 
+    public List<TravelBooking> getBookingList() {
+        return bookingList;
+    }
+
+    public void setBookingList(List<TravelBooking> bookingList) {
+        this.bookingList = bookingList;
+    }
+
     @Override
     public String toString() {
-        return "TravelCustomers{" +
+        return "TravelCustomer{" +
                 "customerId=" + customerId +
                 ", customerName='" + customerName + '\'' +
                 ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
+                ", password='" + "'[PROTECTED]'" + '\'' +
+                ", bookingList=" + bookingList +
                 '}';
     }
 }
