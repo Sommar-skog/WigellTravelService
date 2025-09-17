@@ -1,0 +1,44 @@
+package com.example.WigellTravelService.controllers;
+
+
+import com.example.WigellTravelService.entities.TravelBooking;
+import com.example.WigellTravelService.entities.TravelTrip;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/wigelltravels/v1")
+public class TravelAdminController {
+
+    @GetMapping("/listcanceled")
+    public ResponseEntity<List<TravelBooking>> listCanceledBookings() { //TODO uppdatera till att returnera DAO
+        return null;
+    }
+
+    @GetMapping("/listupcoming")
+    public ResponseEntity<List<TravelBooking>> listUpcomingBookings() { //TODO uppdatera till att returnera DAO
+        return null;
+    }
+
+    @GetMapping("/listpast")
+    public ResponseEntity<List<TravelBooking>> listPastBookings() { //TODO uppdatera till att returnera DAO
+        return null;
+    }
+
+    @PostMapping("/addtravel")
+    public ResponseEntity<TravelTrip> addTrip(@RequestBody TravelBooking travelBooking) { //TODO Ta in DAO returnera DAO
+        return null;
+    }
+
+    @PutMapping("updatetravel")
+    public ResponseEntity<TravelTrip> updateTrip(@RequestBody TravelBooking travelBooking) { //TODO ta in och returnera DAO
+        return null;
+    }
+
+    @DeleteMapping("/removetravel/{id}")
+    public ResponseEntity<String> removeTrip(@PathVariable Long id) {
+        return null;
+    }
+}
