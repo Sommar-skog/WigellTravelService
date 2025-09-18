@@ -67,17 +67,17 @@ public class TravelBookingServiceImpl implements TravelBookingService {
 
     @Override
     public List<TravelBooking> listCanceledBookings() {
-        return List.of();
+        return travelBookingRepository.findByCancelledIsTrue();
     }
 
     @Override
     public List<TravelBooking> listUpcomingBookings() {
-        return List.of();
+        return travelBookingRepository.findByStartDateGreaterThanEqualAndCancelledFalse(LocalDate.now());
     }
 
     @Override
     public List<TravelBooking> listPastBookings() {
-        return List.of();
+        return travelBookingRepository.findByEndDateBeforeAndCancelledIsFalse(LocalDate.now());
     }
 
     private void validateCreateBooking(CreateBookingDTO createBookingDTO) {
