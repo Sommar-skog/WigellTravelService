@@ -20,4 +20,5 @@ public interface TravelBookingService {
     List<TravelBooking> listUpcomingBookings();
 
     List<TravelBooking> listPastBookings();
+
 }

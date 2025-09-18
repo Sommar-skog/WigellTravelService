@@ -15,4 +15,6 @@ public interface TravelTripService {
     TravelTrip updateTrip(TravelTrip trip);
 
     String removeTrip(Long tripId);
+
+    TravelTrip getTripById(Long tripId);
 }
