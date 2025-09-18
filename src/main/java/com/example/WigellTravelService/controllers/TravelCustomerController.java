@@ -1,5 +1,6 @@
 package com.example.WigellTravelService.controllers;
 
+import com.example.WigellTravelService.dtos.CancelBookingDTO;
 import com.example.WigellTravelService.dtos.CreateBookingDTO;
 import com.example.WigellTravelService.entities.TravelBooking;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class TravelCustomerController {
     }
 
     @PutMapping("/canceltrip")
-    public ResponseEntity<TravelBooking> cancelTrip(@RequestBody TravelBooking travelBooking, Principal principal) { //TODO ta in och returnera DAO
+    public ResponseEntity<TravelBooking> cancelTrip(@RequestBody CancelBookingDTO cancelBookingDTO, Principal principal) { //TODO ta in och returnera DAO
         return null;
     }
 

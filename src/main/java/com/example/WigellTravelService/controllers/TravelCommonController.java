@@ -1,6 +1,6 @@
 package com.example.WigellTravelService.controllers;
 
-import com.example.WigellTravelService.entities.TravelTrip;
+import com.example.WigellTravelService.entities.TravelPackage;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +15,7 @@ import java.util.List;
 public class TravelCommonController {
 
     @GetMapping("/travels")
-    public ResponseEntity<List<TravelTrip>> getAllTrips() { //TODO returnera DAO
+    public ResponseEntity<List<TravelPackage>> getAllTrips() { //TODO returnera DAO
         return null;
     }
 

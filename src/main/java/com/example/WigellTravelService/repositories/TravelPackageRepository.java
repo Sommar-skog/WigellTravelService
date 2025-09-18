@@ -1,10 +1,10 @@
 package com.example.WigellTravelService.repositories;
 
-import com.example.WigellTravelService.entities.TravelTrip;
+import com.example.WigellTravelService.entities.TravelPackage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TravelTripRepository extends JpaRepository<TravelTrip, Long> {
+public interface TravelPackageRepository extends JpaRepository<TravelPackage, Long> {
 
 }

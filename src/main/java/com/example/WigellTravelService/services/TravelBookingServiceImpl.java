@@ -1,8 +1,9 @@
 package com.example.WigellTravelService.services;
 
+import com.example.WigellTravelService.dtos.CancelBookingDTO;
 import com.example.WigellTravelService.dtos.CreateBookingDTO;
 import com.example.WigellTravelService.entities.TravelBooking;
-import com.example.WigellTravelService.entities.TravelTrip;
+import com.example.WigellTravelService.entities.TravelPackage;
 import com.example.WigellTravelService.repositories.TravelBookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,23 +20,25 @@ import java.util.List;
 public class TravelBookingServiceImpl implements TravelBookingService {
 
     private final TravelBookingRepository travelBookingRepository;
-    private final TravelTripService travelTripService;
+    private final TravelPackageService travelPackageService;
     private final TravelCustomerService travelCustomerService;
 
     @Autowired
-    public TravelBookingServiceImpl(TravelBookingRepository travelBookingRepository, TravelTripService travelTripService, TravelCustomerService travelCustomerService) {
+    public TravelBookingServiceImpl(TravelBookingRepository travelBookingRepository, TravelPackageService travelPackageService, TravelCustomerService travelCustomerService) {
         this.travelBookingRepository = travelBookingRepository;
-        this.travelTripService = travelTripService;
+        this.travelPackageService = travelPackageService;
         this.travelCustomerService = travelCustomerService;
     }
 
     //TODO kom ihåg DTOs!
 
+
+    //TODO Få in totalpriset i Euro också!
     @Override
     public TravelBooking bookTrip(CreateBookingDTO createBookingDTO, Principal principal) {
         validateCreateBooking(createBookingDTO);
 
-        TravelTrip trip = travelTripService.getTripById(createBookingDTO.getTripId());
+        TravelPackage trip = travelPackageService.getTripById(createBookingDTO.getTripId());
 
         TravelBooking newBooking = new TravelBooking();
         newBooking.setTrip(trip);
@@ -49,7 +52,8 @@ public class TravelBookingServiceImpl implements TravelBookingService {
     }
 
     @Override
-    public TravelBooking cancelTrip(TravelBooking travelBooking, Principal principal) {
+    public TravelBooking cancelTrip(CancelBookingDTO cancelBookingDTO, Principal principal) {
+        validateCancelTrip();
         return null;
     }
 
@@ -91,6 +95,16 @@ public class TravelBookingServiceImpl implements TravelBookingService {
 
     private BigDecimal getTotalPrice(BigDecimal weekPrice, int weeks) {
         return weekPrice.multiply(BigDecimal.valueOf(weeks));
+    }
+
+    private TravelBooking validateCancelTrip(CancelBookingDTO cancelBookingDTO, Principal principal) {
+        TravelBooking booking = travelBookingRepository.findById(cancelBookingDTO.getBookingId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found"));
+
+        if (!booking.getCustomer().getUsername().equals(principal.getName())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not the owner of the booking");
+        }
+
+        return booking;
     }
 
 }

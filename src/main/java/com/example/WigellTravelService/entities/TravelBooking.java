@@ -34,7 +34,7 @@ public class TravelBooking {
 
     @ManyToOne
     @JoinColumn(name= "trip_id", nullable = false)
-    private TravelTrip trip;
+    private TravelPackage trip;
 
     public TravelBooking() {
         this.cancelled = false;
@@ -95,11 +95,11 @@ public class TravelBooking {
         this.customer = customer;
     }
 
-    public TravelTrip getTrip() {
+    public TravelPackage getTrip() {
         return trip;
     }
 
-    public void setTrip(TravelTrip trip) {
+    public void setTrip(TravelPackage trip) {
         this.trip = trip;
     }
 

@@ -2,7 +2,7 @@ package com.example.WigellTravelService.controllers;
 
 
 import com.example.WigellTravelService.entities.TravelBooking;
-import com.example.WigellTravelService.entities.TravelTrip;
+import com.example.WigellTravelService.entities.TravelPackage;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -30,12 +30,12 @@ public class TravelAdminController {
     }
 
     @PostMapping("/addtravel")
-    public ResponseEntity<TravelTrip> addTrip(@RequestBody TravelBooking travelBooking) { //TODO Ta in DAO returnera DAO
+    public ResponseEntity<TravelPackage> addTrip(@RequestBody TravelBooking travelBooking) { //TODO Ta in DAO returnera DAO
         return null;
     }
 
     @PutMapping("updatetravel")
-    public ResponseEntity<TravelTrip> updateTrip(@RequestBody TravelBooking travelBooking) { //TODO ta in och returnera DAO
+    public ResponseEntity<TravelPackage> updateTrip(@RequestBody TravelBooking travelBooking) { //TODO ta in och returnera DAO
         return null;
     }
 

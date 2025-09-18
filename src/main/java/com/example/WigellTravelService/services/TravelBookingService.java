@@ -1,5 +1,6 @@
 package com.example.WigellTravelService.services;
 
+import com.example.WigellTravelService.dtos.CancelBookingDTO;
 import com.example.WigellTravelService.dtos.CreateBookingDTO;
 import com.example.WigellTravelService.entities.TravelBooking;
 
@@ -12,7 +13,7 @@ public interface TravelBookingService {
 
     TravelBooking bookTrip(CreateBookingDTO createBookingDTO, Principal principal);
 
-    TravelBooking cancelTrip(TravelBooking travelBooking, Principal principal);
+    TravelBooking cancelTrip(CancelBookingDTO cancelBookingDTO, Principal principal);
 
     List<TravelBooking> getMyBookings(Principal principal);
 

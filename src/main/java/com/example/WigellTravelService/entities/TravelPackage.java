@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name = "travel_trip")
-public class TravelTrip {
+public class TravelPackage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +21,7 @@ public class TravelTrip {
     @Column(nullable = false, precision = 7, scale = 2)
     private BigDecimal weekPrice;
 
-    public TravelTrip() {
+    public TravelPackage() {
 
     }
 
@@ -59,7 +59,7 @@ public class TravelTrip {
 
     @Override
     public String toString() {
-        return "TravelTrip{" +
+        return "TravelPackage{" +
                 "tripId=" + tripId +
                 ", hotelName='" + hotelName + '\'' +
                 ", destination='" + destination + '\'' +
