@@ -53,13 +53,16 @@ public class TravelBookingServiceImpl implements TravelBookingService {
 
     @Override
     public TravelBooking cancelTrip(CancelBookingDTO cancelBookingDTO, Principal principal) {
-        validateCancelTrip();
-        return null;
+         TravelBooking trip = validateCancelTrip(cancelBookingDTO, principal);
+         if (isStartDateBeforeToday(trip.getStartDate())) {
+                trip.setCancelled(true);
+         }
+        return travelBookingRepository.save(trip);
     }
 
     @Override
     public List<TravelBooking> getMyBookings(Principal principal) {
-        return List.of();
+        return travelBookingRepository.findByTravelCustomer(principal.getName());
     }
 
     @Override
@@ -105,6 +108,10 @@ public class TravelBookingServiceImpl implements TravelBookingService {
         }
 
         return booking;
+    }
+
+    private boolean isStartDateBeforeToday(LocalDate startDate) {
+        return startDate.isBefore(LocalDate.now());
     }
 
 }
