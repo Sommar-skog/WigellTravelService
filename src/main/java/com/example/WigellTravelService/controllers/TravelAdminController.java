@@ -1,6 +1,7 @@
 package com.example.WigellTravelService.controllers;
 
 
+import com.example.WigellTravelService.dtos.AddTravelPackageDTO;
 import com.example.WigellTravelService.entities.TravelBooking;
 import com.example.WigellTravelService.entities.TravelPackage;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class TravelAdminController {
     }
 
     @PostMapping("/addtravel")
-    public ResponseEntity<TravelPackage> addTrip(@RequestBody TravelBooking travelBooking) { //TODO Ta in DAO returnera DAO
+    public ResponseEntity<TravelPackage> addTrip(@RequestBody AddTravelPackageDTO addTravelPackageDTO) { //TODO Ta in DAO returnera DAO
         return null;
     }
 

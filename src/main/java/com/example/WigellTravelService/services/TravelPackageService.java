@@ -1,5 +1,6 @@
 package com.example.WigellTravelService.services;
 
+import com.example.WigellTravelService.dtos.AddTravelPackageDTO;
 import com.example.WigellTravelService.entities.TravelPackage;
 
 import java.util.List;
@@ -10,7 +11,7 @@ public interface TravelPackageService {
 
     List<TravelPackage> getAllTravelPackages();
 
-    TravelPackage addTravelPackage(TravelPackage trip);
+    TravelPackage addTravelPackage(AddTravelPackageDTO addTravelPackageDTO);
 
     TravelPackage updateTravelPackage(TravelPackage trip);
 

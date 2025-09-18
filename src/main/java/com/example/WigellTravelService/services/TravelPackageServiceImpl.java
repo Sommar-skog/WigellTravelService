@@ -1,5 +1,6 @@
 package com.example.WigellTravelService.services;
 
+import com.example.WigellTravelService.dtos.AddTravelPackageDTO;
 import com.example.WigellTravelService.entities.TravelPackage;
 import com.example.WigellTravelService.repositories.TravelPackageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,15 @@ public class TravelPackageServiceImpl implements TravelPackageService {
     }
 
     @Override
-    public TravelPackage addTravelPackage(TravelPackage trip) {
-        return null;
+    public TravelPackage addTravelPackage(AddTravelPackageDTO addTravelPackageDTO) {
+        validateAddTravelPackage(addTravelPackageDTO);
+
+        TravelPackage travelPackage = new TravelPackage();
+        travelPackage.setHotelName(addTravelPackageDTO.getHotelName().trim());
+        travelPackage.setDestination(addTravelPackageDTO.getDestination().trim());
+        travelPackage.setWeekPrice(addTravelPackageDTO.getWeekPrice());
+
+        return travelPackageRepository.save(travelPackage);
     }
 
     @Override
@@ -44,7 +52,7 @@ public class TravelPackageServiceImpl implements TravelPackageService {
         return travelPackageRepository.findById(tripId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Trip with id " + tripId + " not found"));
     }
 
-    private void validateAddTravelPackage(TravelPackage travelPackage) {
+    private void validateAddTravelPackage(AddTravelPackageDTO travelPackage) {
       if (travelPackage.getHotelName() == null || travelPackage.getHotelName().isBlank()) {
           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Hotel name is required");
       }
