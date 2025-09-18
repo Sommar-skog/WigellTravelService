@@ -67,7 +67,7 @@ public class TravelPackageServiceImpl implements TravelPackageService {
           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Hotel name is required");
       }
       if (travelPackage.getHotelName().length() > 50) {
-          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Hotel name must be less than 50 characters");
+          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Hotel name must be 50 characters or less");
       }
 
       if (travelPackage.getDestination() == null || travelPackage.getDestination().isBlank()) {
@@ -75,7 +75,7 @@ public class TravelPackageServiceImpl implements TravelPackageService {
       }
 
       if (travelPackage.getDestination().length() > 50) {
-          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Destination must be less than 50 characters");
+          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Destination must be 50 characters or less");
       }
 
       if (travelPackage.getWeekPrice() == null) {
@@ -91,28 +91,27 @@ public class TravelPackageServiceImpl implements TravelPackageService {
     private void validateUpdateTravelPackage(UpdateTravelPackageDTO updateTravelPackageDTO) {
         if (updateTravelPackageDTO.getHotelName() != null) {
             if (updateTravelPackageDTO.getHotelName().length() > 50) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Hotel name must be less than 50 characters");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Hotel name must be 50 characters or less");
             }
             if (updateTravelPackageDTO.getHotelName().isBlank()){
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Hotel name cannot be blank");
             }
+        }
 
-            if (updateTravelPackageDTO.getDestination() != null) {
-                if (updateTravelPackageDTO.getDestination().length() > 50) {
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Destination must be less than 50 characters");
-                }
-                if (updateTravelPackageDTO.getDestination().isBlank()){
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Destination cannot be blank");
-                }
+        if (updateTravelPackageDTO.getDestination() != null) {
+            if (updateTravelPackageDTO.getDestination().length() > 50) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Destination must be 50 characters or less");
             }
-
-            BigDecimal maxWeekPrice = new BigDecimal("99999.99");
-            if (updateTravelPackageDTO.getWeekPrice() != null) {
-                if (updateTravelPackageDTO.getWeekPrice().compareTo(BigDecimal.ZERO) <= 0 || updateTravelPackageDTO.getWeekPrice().compareTo(maxWeekPrice) >0) {
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Week price must be between 0.01 and 99999.99");
-                }
+            if (updateTravelPackageDTO.getDestination().isBlank()){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Destination cannot be blank");
             }
         }
 
+        BigDecimal maxWeekPrice = new BigDecimal("99999.99");
+        if (updateTravelPackageDTO.getWeekPrice() != null) {
+            if (updateTravelPackageDTO.getWeekPrice().compareTo(BigDecimal.ZERO) <= 0 || updateTravelPackageDTO.getWeekPrice().compareTo(maxWeekPrice) >0) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Week price must be between 0.01 and 99999.99");
+            }
+        }
     }
 }
