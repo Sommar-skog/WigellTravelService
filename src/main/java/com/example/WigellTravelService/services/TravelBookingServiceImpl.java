@@ -11,6 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -19,18 +20,19 @@ public class TravelBookingServiceImpl implements TravelBookingService {
 
     private final TravelBookingRepository travelBookingRepository;
     private final TravelTripService travelTripService;
+    private final TravelCustomerService travelCustomerService;
 
     @Autowired
-    public TravelBookingServiceImpl(TravelBookingRepository travelBookingRepository, TravelTripService travelTripService) {
+    public TravelBookingServiceImpl(TravelBookingRepository travelBookingRepository, TravelTripService travelTripService, TravelCustomerService travelCustomerService) {
         this.travelBookingRepository = travelBookingRepository;
         this.travelTripService = travelTripService;
+        this.travelCustomerService = travelCustomerService;
     }
 
     //TODO kom ihåg DTOs!
 
     @Override
-    public TravelBooking bookTrip(CreateBookingDTO createBookingDTO) {
-        //Behöver få in principal som användarnamn
+    public TravelBooking bookTrip(CreateBookingDTO createBookingDTO, Principal principal) {
         validateCreateBooking(createBookingDTO);
 
         TravelTrip trip = travelTripService.getTripById(createBookingDTO.getTripId());
@@ -41,18 +43,18 @@ public class TravelBookingServiceImpl implements TravelBookingService {
         newBooking.setNumberOfWeeks(createBookingDTO.getNumberOfWeeks());
         newBooking.setEndDate(getTripEndDate(createBookingDTO.getStartDate(), createBookingDTO.getNumberOfWeeks()));
         newBooking.setTotalPrice(getTotalPrice(trip.getWeekPrice(), createBookingDTO.getNumberOfWeeks()));
+        newBooking.setCustomer(travelCustomerService.findTravelCustomerByUsername(principal.getName()));
 
+        return travelBookingRepository.save(newBooking);
+    }
 
+    @Override
+    public TravelBooking cancelTrip(TravelBooking travelBooking, Principal principal) {
         return null;
     }
 
     @Override
-    public TravelBooking cancelTrip(TravelBooking travelBooking) {
-        return null;
-    }
-
-    @Override
-    public List<TravelBooking> getMyBookings() {
+    public List<TravelBooking> getMyBookings(Principal principal) {
         return List.of();
     }
 
