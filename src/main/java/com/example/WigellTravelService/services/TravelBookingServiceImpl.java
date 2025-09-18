@@ -18,10 +18,10 @@ import java.util.List;
 public class TravelBookingServiceImpl implements TravelBookingService {
 
     private final TravelBookingRepository travelBookingRepository;
-    private final TravelTripServiceImpl travelTripService;
+    private final TravelTripService travelTripService;
 
     @Autowired
-    public TravelBookingServiceImpl(TravelBookingRepository travelBookingRepository, TravelTripServiceImpl travelTripService) {
+    public TravelBookingServiceImpl(TravelBookingRepository travelBookingRepository, TravelTripService travelTripService) {
         this.travelBookingRepository = travelBookingRepository;
         this.travelTripService = travelTripService;
     }
