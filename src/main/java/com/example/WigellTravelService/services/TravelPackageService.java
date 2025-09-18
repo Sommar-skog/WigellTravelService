@@ -8,13 +8,13 @@ public interface TravelPackageService {
 
     //TODO ta in och returnera DAO
 
-    List<TravelPackage> getAllTrips();
+    List<TravelPackage> getAllTravelPackages();
 
-    TravelPackage addTrip(TravelPackage trip);
+    TravelPackage addTravelPackage(TravelPackage trip);
 
-    TravelPackage updateTrip(TravelPackage trip);
+    TravelPackage updateTravelPackage(TravelPackage trip);
 
-    String removeTrip(Long tripId);
+    String removeTravelPackage(Long tripId);
 
     TravelPackage getTripById(Long tripId);
 }
