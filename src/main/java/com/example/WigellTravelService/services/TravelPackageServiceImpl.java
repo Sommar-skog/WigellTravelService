@@ -1,6 +1,7 @@
 package com.example.WigellTravelService.services;
 
 import com.example.WigellTravelService.dtos.AddTravelPackageDTO;
+import com.example.WigellTravelService.dtos.UpdateTravelPackageDTO;
 import com.example.WigellTravelService.entities.TravelPackage;
 import com.example.WigellTravelService.repositories.TravelPackageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +40,15 @@ public class TravelPackageServiceImpl implements TravelPackageService {
     }
 
     @Override
-    public TravelPackage updateTravelPackage(TravelPackage trip) {
-        return null;
+    public TravelPackage updateTravelPackage(UpdateTravelPackageDTO updateTravelPackageDTO) {
+        TravelPackage travelPackageToUpdate = getTravelPackageById(updateTravelPackageDTO.getTravelPackageId());
+        validateUpdateTravelPackage(updateTravelPackageDTO);
+
+        travelPackageToUpdate.setHotelName(updateTravelPackageDTO.getHotelName().trim());
+        travelPackageToUpdate.setDestination(updateTravelPackageDTO.getDestination().trim());
+        travelPackageToUpdate.setWeekPrice(updateTravelPackageDTO.getWeekPrice());
+
+        return travelPackageRepository.save(travelPackageToUpdate);
     }
 
     @Override
@@ -48,7 +56,7 @@ public class TravelPackageServiceImpl implements TravelPackageService {
         return "";
     }
 
-    public TravelPackage getTripById(Long tripId) {
+    public TravelPackage getTravelPackageById(Long tripId) {
         return travelPackageRepository.findById(tripId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Trip with id " + tripId + " not found"));
     }
 
@@ -76,5 +84,33 @@ public class TravelPackageServiceImpl implements TravelPackageService {
       if (travelPackage.getWeekPrice().compareTo(BigDecimal.ZERO) <= 0 || travelPackage.getWeekPrice().compareTo(maxWeekPrice) >0) {
           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Week price must be between 0.01 and 99999.99");
       }
+    }
+
+    private void validateUpdateTravelPackage(UpdateTravelPackageDTO updateTravelPackageDTO) {
+        if (updateTravelPackageDTO.getHotelName() != null) {
+            if (updateTravelPackageDTO.getHotelName().length() > 50) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Hotel name must be less than 50 characters");
+            }
+            if (updateTravelPackageDTO.getHotelName().isBlank()){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Hotel name cannot be blank");
+            }
+
+            if (updateTravelPackageDTO.getDestination() != null) {
+                if (updateTravelPackageDTO.getDestination().length() > 50) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Destination must be less than 50 characters");
+                }
+                if (updateTravelPackageDTO.getDestination().isBlank()){
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Destination cannot be blank");
+                }
+            }
+
+            BigDecimal maxWeekPrice = new BigDecimal("99999.99");
+            if (updateTravelPackageDTO.getWeekPrice() != null) {
+                if (updateTravelPackageDTO.getWeekPrice().compareTo(BigDecimal.ZERO) <= 0 || updateTravelPackageDTO.getWeekPrice().compareTo(maxWeekPrice) >0) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Week price must be between 0.01 and 99999.99");
+                }
+            }
+        }
+
     }
 }

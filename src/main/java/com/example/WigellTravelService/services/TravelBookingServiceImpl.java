@@ -38,7 +38,7 @@ public class TravelBookingServiceImpl implements TravelBookingService {
     public TravelBooking bookTrip(CreateBookingDTO createBookingDTO, Principal principal) {
         validateCreateBooking(createBookingDTO);
 
-        TravelPackage trip = travelPackageService.getTripById(createBookingDTO.getTripId());
+        TravelPackage trip = travelPackageService.getTravelPackageById(createBookingDTO.getTripId());
 
         TravelBooking newBooking = new TravelBooking();
         newBooking.setTrip(trip);
