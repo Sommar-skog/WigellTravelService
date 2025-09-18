@@ -46,7 +46,7 @@ public class TravelBookingServiceImpl implements TravelBookingService {
         newBooking.setNumberOfWeeks(createBookingDTO.getNumberOfWeeks());
         newBooking.setEndDate(getTripEndDate(createBookingDTO.getStartDate(), createBookingDTO.getNumberOfWeeks()));
         newBooking.setTotalPrice(getTotalPrice(trip.getWeekPrice(), createBookingDTO.getNumberOfWeeks()));
-        newBooking.setCustomer(travelCustomerService.findTravelCustomerByUsername(principal.getName()));
+        newBooking.setTravelCustomer(travelCustomerService.findTravelCustomerByUsername(principal.getName()));
 
         return travelBookingRepository.save(newBooking);
     }
@@ -62,7 +62,7 @@ public class TravelBookingServiceImpl implements TravelBookingService {
 
     @Override
     public List<TravelBooking> getMyBookings(Principal principal) {
-        return travelBookingRepository.findByTravelCustomer(principal.getName());
+        return travelBookingRepository.findByTravelCustomerUsername(principal.getName());
     }
 
     @Override
@@ -103,7 +103,7 @@ public class TravelBookingServiceImpl implements TravelBookingService {
     private TravelBooking validateCancelTrip(CancelBookingDTO cancelBookingDTO, Principal principal) {
         TravelBooking booking = travelBookingRepository.findById(cancelBookingDTO.getBookingId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found"));
 
-        if (!booking.getCustomer().getUsername().equals(principal.getName())) {
+        if (!booking.getTravelCustomer().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not the owner of the booking");
         }
 

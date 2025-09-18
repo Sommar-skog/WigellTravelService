@@ -21,7 +21,7 @@ public class TravelCustomer {
     @Column(nullable = false, length = 50)
     private String password;
 
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "travelCustomer")
     private List<TravelBooking> bookingList;
 
     public TravelCustomer() {

@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface TravelBookingRepository extends JpaRepository<TravelBooking, Long> {
 
-    List<TravelBooking> findByTravelCustomer(String username);
+    List<TravelBooking> findByTravelCustomerUsername(String username);
 
     List<TravelBooking> findByCancelledIsTrue();
 

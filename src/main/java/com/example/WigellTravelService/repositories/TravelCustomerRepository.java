@@ -9,6 +9,6 @@ import java.util.Optional;
 @Repository
 public interface TravelCustomerRepository  extends JpaRepository<TravelCustomer, Long> {
 
-    Optional<TravelCustomer> findByCustomerUsername(String customerId);
+    Optional<TravelCustomer> findByUsername(String customerId);
 
 }

@@ -25,7 +25,7 @@ public class TravelCustomerServiceImpl implements TravelCustomerService {
 
     @Override
     public TravelCustomer findTravelCustomerByUsername(String username) {
-        return travelCustomerRepository.findByCustomerUsername(username)
+        return travelCustomerRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer with username " + username + " was not found"));
     }
 }
