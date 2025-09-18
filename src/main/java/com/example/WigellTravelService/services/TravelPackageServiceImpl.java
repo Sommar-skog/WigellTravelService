@@ -52,12 +52,14 @@ public class TravelPackageServiceImpl implements TravelPackageService {
     }
 
     @Override
-    public String removeTravelPackage(Long tripId) {
-        return "";
+    public String removeTravelPackage(Long travelPackageId) {
+        TravelPackage travelPackageToRemove = getTravelPackageById(travelPackageId);
+        travelPackageRepository.delete(travelPackageToRemove);
+        return "Travel Package Removed with id  [" + travelPackageId + "] successfully";
     }
 
-    public TravelPackage getTravelPackageById(Long tripId) {
-        return travelPackageRepository.findById(tripId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Trip with id " + tripId + " not found"));
+    public TravelPackage getTravelPackageById(Long travelPackageId) {
+        return travelPackageRepository.findById(travelPackageId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Trip with id " + travelPackageId + " not found"));
     }
 
     private void validateAddTravelPackage(AddTravelPackageDTO travelPackage) {
