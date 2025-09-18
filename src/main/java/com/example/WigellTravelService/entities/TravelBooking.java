@@ -37,7 +37,7 @@ public class TravelBooking {
     private TravelTrip trip;
 
     public TravelBooking() {
-
+        this.cancelled = false;
     }
 
     public Long getBookingId() {

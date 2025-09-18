@@ -8,7 +8,7 @@ public class CreateBookingDTO {
 
     private LocalDate startDate;
 
-    private int numberOfWeeks;
+    private Integer numberOfWeeks;
 
     public Long getTripId() {
         return tripId;
@@ -26,7 +26,7 @@ public class CreateBookingDTO {
         this.startDate = startDate;
     }
 
-    public int getNumberOfWeeks() {
+    public Integer getNumberOfWeeks() {
         return numberOfWeeks;
     }
 
