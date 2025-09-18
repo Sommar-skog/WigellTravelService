@@ -1,44 +1,28 @@
-package com.example.WigellTravelService.entities;
-
-import jakarta.persistence.*;
+package com.example.WigellTravelService.dtos;
 
 import java.math.BigDecimal;
 
-@Entity
-@Table(name = "travel_trip")
-public class TravelPackage {
+public class UpdateTravelPackageDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long travelPackageId;
-
-    @Column(nullable = false, length = 50)
     private String hotelName;
-
-    @Column(nullable = false, length = 50)
     private String destination;
-
-    @Column(nullable = false, precision = 7, scale = 2)
     private BigDecimal weekPrice;
-
-    public TravelPackage() {
-
-    }
 
     public Long getTravelPackageId() {
         return travelPackageId;
     }
 
-    public void setTravelPackageId(Long tripId) {
-        this.travelPackageId = tripId;
+    public void setTravelPackageId(Long travelPackageId) {
+        this.travelPackageId = travelPackageId;
     }
 
     public String getHotelName() {
         return hotelName;
     }
 
-    public void setHotelName(String hotellName) {
-        this.hotelName = hotellName;
+    public void setHotelName(String hotelName) {
+        this.hotelName = hotelName;
     }
 
     public String getDestination() {
@@ -53,13 +37,13 @@ public class TravelPackage {
         return weekPrice;
     }
 
-    public void setWeekPrice(BigDecimal price) {
-        this.weekPrice = price;
+    public void setWeekPrice(BigDecimal weekPrice) {
+        this.weekPrice = weekPrice;
     }
 
     @Override
     public String toString() {
-        return "TravelPackage{" +
+        return "UpdateTravelPackageDTO{" +
                 "travelPackageId=" + travelPackageId +
                 ", hotelName='" + hotelName + '\'' +
                 ", destination='" + destination + '\'' +
