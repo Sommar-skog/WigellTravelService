@@ -62,17 +62,17 @@ public class TravelAdminController {
     }
 
     @PostMapping("/addtravel")
-    public ResponseEntity<TravelPackageDTO> addTrip(@RequestBody AddTravelPackageDTO addTravelPackageDTO) {
+    public ResponseEntity<TravelPackageDTO> addTravelPackage(@RequestBody AddTravelPackageDTO addTravelPackageDTO) {
         return new ResponseEntity<>(TravelPackageMapper.toDTO(travelPackageService.addTravelPackage(addTravelPackageDTO)), HttpStatus.CREATED);
     }
 
     @PutMapping("updatetravel")
-    public ResponseEntity<TravelPackageDTO> updateTrip(@RequestBody UpdateTravelPackageDTO updateTravelPackageDTO) {
+    public ResponseEntity<TravelPackageDTO> updateTravelPackage(@RequestBody UpdateTravelPackageDTO updateTravelPackageDTO) {
         return ResponseEntity.ok(TravelPackageMapper.toDTO(travelPackageService.updateTravelPackage(updateTravelPackageDTO)));
     }
 
     @DeleteMapping("/removetravel/{id}")
-    public ResponseEntity<String> removeTrip(@PathVariable Long id) {
+    public ResponseEntity<String> removeTravelPackage(@PathVariable Long id) {
         return ResponseEntity.ok(travelPackageService.removeTravelPackage(id));
     }
 }
