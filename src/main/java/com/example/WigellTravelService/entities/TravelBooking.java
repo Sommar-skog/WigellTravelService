@@ -34,7 +34,7 @@ public class TravelBooking {
 
     @ManyToOne
     @JoinColumn(name= "trip_id", nullable = false)
-    private TravelPackage trip;
+    private TravelPackage travelPackage;
 
     public TravelBooking() {
         this.cancelled = false;
@@ -95,12 +95,12 @@ public class TravelBooking {
         this.travelCustomer = customer;
     }
 
-    public TravelPackage getTrip() {
-        return trip;
+    public TravelPackage getTravelPackage() {
+        return travelPackage;
     }
 
-    public void setTrip(TravelPackage trip) {
-        this.trip = trip;
+    public void setTravelPackage(TravelPackage travelPackage) {
+        this.travelPackage = travelPackage;
     }
 
     @Override
@@ -112,7 +112,7 @@ public class TravelBooking {
                 ", totalPrice=" + totalPrice +
                 ", cancelled=" + cancelled +
                 ", travelCustomer=" + travelCustomer +
-                ", trip=" + trip +
+                ", travelPackage=" + travelPackage +
                 '}';
     }
 }

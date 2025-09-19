@@ -41,7 +41,7 @@ public class TravelBookingServiceImpl implements TravelBookingService {
         TravelPackage trip = travelPackageService.getTravelPackageById(createBookingDTO.getTripId());
 
         TravelBooking newBooking = new TravelBooking();
-        newBooking.setTrip(trip);
+        newBooking.setTravelPackage(trip);
         newBooking.setStartDate(createBookingDTO.getStartDate());
         newBooking.setNumberOfWeeks(createBookingDTO.getNumberOfWeeks());
         newBooking.setEndDate(getTripEndDate(createBookingDTO.getStartDate(), createBookingDTO.getNumberOfWeeks()));
