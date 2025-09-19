@@ -4,18 +4,18 @@ import java.time.LocalDate;
 
 public class CreateBookingDTO {
 
-    private Long tripId;
+    private Long travelPackageId;
 
     private LocalDate startDate;
 
     private Integer numberOfWeeks;
 
-    public Long getTripId() {
-        return tripId;
+    public Long getTravelPackageId() {
+        return travelPackageId;
     }
 
-    public void setTripId(Long tripId) {
-        this.tripId = tripId;
+    public void setTravelPackageId(Long travelPackageId) {
+        this.travelPackageId = travelPackageId;
     }
 
     public LocalDate getStartDate() {
@@ -37,7 +37,7 @@ public class CreateBookingDTO {
     @Override
     public String toString() {
         return "CreateBookingDTO{" +
-                "tripId=" + tripId +
+                "travelPackageId=" + travelPackageId +
                 ", startDate=" + startDate +
                 ", numberOfWeeks=" + numberOfWeeks +
                 '}';

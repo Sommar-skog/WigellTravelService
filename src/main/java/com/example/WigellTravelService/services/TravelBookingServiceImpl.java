@@ -38,7 +38,7 @@ public class TravelBookingServiceImpl implements TravelBookingService {
     public TravelBooking bookTrip(CreateBookingDTO createBookingDTO, Principal principal) {
         validateCreateBooking(createBookingDTO);
 
-        TravelPackage trip = travelPackageService.getTravelPackageById(createBookingDTO.getTripId());
+        TravelPackage trip = travelPackageService.getTravelPackageById(createBookingDTO.getTravelPackageId());
 
         TravelBooking newBooking = new TravelBooking();
         newBooking.setTravelPackage(trip);
@@ -54,7 +54,7 @@ public class TravelBookingServiceImpl implements TravelBookingService {
     @Override
     public TravelBooking cancelTrip(CancelBookingDTO cancelBookingDTO, Principal principal) {
          TravelBooking trip = validateCancelTrip(cancelBookingDTO, principal);
-         if (isStartDateBeforeToday(trip.getStartDate())) {
+         if (isTripUpcoming(trip.getStartDate())) {
                 trip.setCancelled(true);
          }
         return travelBookingRepository.save(trip);
@@ -81,7 +81,7 @@ public class TravelBookingServiceImpl implements TravelBookingService {
     }
 
     private void validateCreateBooking(CreateBookingDTO createBookingDTO) {
-        if (createBookingDTO.getTripId() == null) {
+        if (createBookingDTO.getTravelPackageId() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Trip id is required");
         }
         if (createBookingDTO.getStartDate() == null) {
@@ -110,8 +110,8 @@ public class TravelBookingServiceImpl implements TravelBookingService {
         return booking;
     }
 
-    private boolean isStartDateBeforeToday(LocalDate startDate) {
-        return startDate.isBefore(LocalDate.now());
+    private boolean isTripUpcoming(LocalDate startDate) {
+        return startDate.isAfter(LocalDate.now());
     }
 
 }
