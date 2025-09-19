@@ -19,8 +19,10 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/h2-console/**").permitAll()
                     .anyRequest().authenticated())
                 .csrf(csrf -> csrf.disable())
+                .headers(h -> h.frameOptions(f -> f.disable()))
                 .httpBasic(Customizer.withDefaults());
         return http.build();
     }
