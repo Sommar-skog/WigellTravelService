@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 // DTO used only for returning data
-public class BookingDTO {
+public class TravelBookingDTO {
 
     private String bookedBy;
     private Long bookingId;
@@ -15,12 +15,13 @@ public class BookingDTO {
     private int weeks;
     private BigDecimal totalPriceInSek;
     private BigDecimal totalPriceInEuro;
+    private boolean cancelled;
 
-    public BookingDTO() {
+    public TravelBookingDTO() {
 
     }
 
-    public BookingDTO(String bookedBy, Long bookingId, String hotelName, String Destination, LocalDate startDate, int weeks, BigDecimal totalPriceInSek, BigDecimal totalPriceInEuro) {
+    public TravelBookingDTO(String bookedBy, Long bookingId, String hotelName, String Destination, LocalDate startDate, int weeks, BigDecimal totalPriceInSek, BigDecimal totalPriceInEuro, boolean cancelled) {
         this.bookedBy = bookedBy;
         this.bookingId = bookingId;
         this.hotelName = hotelName;
@@ -29,6 +30,7 @@ public class BookingDTO {
         this.weeks = weeks;
         this.totalPriceInSek = totalPriceInSek;
         this.totalPriceInEuro = totalPriceInEuro;
+        this.cancelled = cancelled;
     }
 
     public String getBookedBy() {
@@ -95,9 +97,17 @@ public class BookingDTO {
         this.totalPriceInEuro = totalPriceInEuro;
     }
 
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
+    }
+
     @Override
     public String toString() {
-        return "BookingDTO{" +
+        return "TravelBookingDTO{" +
                 "bookedBy='" + bookedBy + '\'' +
                 ", bookingId=" + bookingId +
                 ", hotelName='" + hotelName + '\'' +
@@ -106,6 +116,7 @@ public class BookingDTO {
                 ", weeks=" + weeks +
                 ", totalPriceInSek=" + totalPriceInSek +
                 ", totalPriceInEuro=" + totalPriceInEuro +
+                ", cancelled=" + cancelled +
                 '}';
     }
 }

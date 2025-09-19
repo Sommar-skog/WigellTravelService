@@ -2,9 +2,14 @@ package com.example.WigellTravelService.controllers;
 
 
 import com.example.WigellTravelService.dtos.AddTravelPackageDTO;
+import com.example.WigellTravelService.dtos.TravelBookingDTO;
 import com.example.WigellTravelService.dtos.UpdateTravelPackageDTO;
+import com.example.WigellTravelService.dtos.mappers.TravelBookingMapper;
 import com.example.WigellTravelService.entities.TravelBooking;
 import com.example.WigellTravelService.entities.TravelPackage;
+import com.example.WigellTravelService.services.TravelBookingService;
+import com.example.WigellTravelService.services.TravelPackageService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -16,19 +21,41 @@ import java.util.List;
 @RequestMapping("/api/wigelltravels/v1")
 public class TravelAdminController {
 
+    private final TravelBookingService travelBookingService;
+
+    @Autowired
+    public TravelAdminController(TravelBookingService travelBookingService) {
+        this.travelBookingService = travelBookingService;
+    }
+
     @GetMapping("/listcanceled")
-    public ResponseEntity<List<TravelBooking>> listCanceledBookings() { //TODO uppdatera till att returnera DAO
-        return null;
+    public ResponseEntity<List<TravelBookingDTO>> listCanceledBookings() {
+        List<TravelBookingDTO> dtoList = travelBookingService
+                .listCanceledBookings()
+                .stream()
+                .map(TravelBookingMapper::toDTO)
+                .toList();
+        return ResponseEntity.ok(dtoList);
     }
 
     @GetMapping("/listupcoming")
-    public ResponseEntity<List<TravelBooking>> listUpcomingBookings() { //TODO uppdatera till att returnera DAO
-        return null;
+    public ResponseEntity<List<TravelBookingDTO>> listUpcomingBookings() {
+        List<TravelBookingDTO> dtoList = travelBookingService
+                .listUpcomingBookings()
+                .stream()
+                .map(TravelBookingMapper::toDTO)
+                .toList();
+        return ResponseEntity.ok(dtoList);
     }
 
     @GetMapping("/listpast")
-    public ResponseEntity<List<TravelBooking>> listPastBookings() { //TODO uppdatera till att returnera DAO
-        return null;
+    public ResponseEntity<List<TravelBookingDTO>> listPastBookings() {
+        List<TravelBookingDTO> dtoList = travelBookingService
+                .listPastBookings()
+                .stream()
+                .map(TravelBookingMapper::toDTO)
+                .toList();
+        return ResponseEntity.ok(dtoList);
     }
 
     @PostMapping("/addtravel")
