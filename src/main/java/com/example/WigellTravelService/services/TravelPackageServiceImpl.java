@@ -44,9 +44,17 @@ public class TravelPackageServiceImpl implements TravelPackageService {
         TravelPackage travelPackageToUpdate = getTravelPackageById(updateTravelPackageDTO.getTravelPackageId());
         validateUpdateTravelPackage(updateTravelPackageDTO);
 
-        travelPackageToUpdate.setHotelName(updateTravelPackageDTO.getHotelName().trim());
-        travelPackageToUpdate.setDestination(updateTravelPackageDTO.getDestination().trim());
-        travelPackageToUpdate.setWeekPrice(updateTravelPackageDTO.getWeekPrice());
+        if (updateTravelPackageDTO.getHotelName() != null) {
+            travelPackageToUpdate.setHotelName(updateTravelPackageDTO.getHotelName());
+        }
+
+        if (updateTravelPackageDTO.getDestination() != null) {
+            travelPackageToUpdate.setDestination(updateTravelPackageDTO.getDestination());
+        }
+
+        if (updateTravelPackageDTO.getWeekPrice() != null) {
+            travelPackageToUpdate.setWeekPrice(updateTravelPackageDTO.getWeekPrice());
+        }
 
         return travelPackageRepository.save(travelPackageToUpdate);
     }
@@ -59,7 +67,7 @@ public class TravelPackageServiceImpl implements TravelPackageService {
     }
 
     public TravelPackage getTravelPackageById(Long travelPackageId) {
-        return travelPackageRepository.findById(travelPackageId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Trip with id " + travelPackageId + " not found"));
+        return travelPackageRepository.findById(travelPackageId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "TravelPackage with id " + travelPackageId + " not found"));
     }
 
     private void validateAddTravelPackage(AddTravelPackageDTO travelPackage) {
@@ -89,6 +97,7 @@ public class TravelPackageServiceImpl implements TravelPackageService {
     }
 
     private void validateUpdateTravelPackage(UpdateTravelPackageDTO updateTravelPackageDTO) {
+
         if (updateTravelPackageDTO.getHotelName() != null) {
             if (updateTravelPackageDTO.getHotelName().length() > 50) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Hotel name must be 50 characters or less");
@@ -96,6 +105,7 @@ public class TravelPackageServiceImpl implements TravelPackageService {
             if (updateTravelPackageDTO.getHotelName().isBlank()){
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Hotel name cannot be blank");
             }
+            updateTravelPackageDTO.setHotelName(updateTravelPackageDTO.getHotelName().trim());
         }
 
         if (updateTravelPackageDTO.getDestination() != null) {
@@ -105,6 +115,7 @@ public class TravelPackageServiceImpl implements TravelPackageService {
             if (updateTravelPackageDTO.getDestination().isBlank()){
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Destination cannot be blank");
             }
+            updateTravelPackageDTO.setDestination(updateTravelPackageDTO.getDestination().trim());
         }
 
         BigDecimal maxWeekPrice = new BigDecimal("99999.99");
