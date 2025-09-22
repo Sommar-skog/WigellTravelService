@@ -4,7 +4,6 @@ import com.example.WigellTravelService.dtos.CancelBookingDTO;
 import com.example.WigellTravelService.dtos.CreateBookingDTO;
 import com.example.WigellTravelService.dtos.TravelBookingDTO;
 import com.example.WigellTravelService.dtos.mappers.TravelBookingMapper;
-import com.example.WigellTravelService.entities.TravelBooking;
 import com.example.WigellTravelService.services.TravelBookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

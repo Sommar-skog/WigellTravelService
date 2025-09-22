@@ -2,7 +2,6 @@ package com.example.WigellTravelService.controllers;
 
 import com.example.WigellTravelService.dtos.TravelPackageDTO;
 import com.example.WigellTravelService.dtos.mappers.TravelPackageMapper;
-import com.example.WigellTravelService.entities.TravelPackage;
 import com.example.WigellTravelService.services.TravelPackageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
