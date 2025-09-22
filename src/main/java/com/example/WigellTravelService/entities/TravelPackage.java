@@ -25,6 +25,13 @@ public class TravelPackage {
 
     }
 
+    public TravelPackage(Long travelPackageId, String hotelName, String destination, BigDecimal weekPrice) {
+        this.travelPackageId = travelPackageId;
+        this.hotelName = hotelName;
+        this.destination = destination;
+        this.weekPrice = weekPrice;
+    }
+
     public Long getTravelPackageId() {
         return travelPackageId;
     }

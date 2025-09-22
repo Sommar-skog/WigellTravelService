@@ -8,6 +8,15 @@ public class AddTravelPackageDTO {
     private String destination;
     private BigDecimal weekPrice;
 
+    public AddTravelPackageDTO() {
+
+    }
+    public AddTravelPackageDTO(String hotelName, String destination, BigDecimal weekPrice) {
+        this.hotelName = hotelName;
+        this.destination = destination;
+        this.weekPrice = weekPrice;
+    }
+
     public String getHotelName() {
         return hotelName;
     }

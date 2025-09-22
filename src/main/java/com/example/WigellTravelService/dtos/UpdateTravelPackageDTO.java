@@ -9,6 +9,17 @@ public class UpdateTravelPackageDTO {
     private String destination;
     private BigDecimal weekPrice;
 
+    public UpdateTravelPackageDTO() {
+
+    }
+
+    public UpdateTravelPackageDTO(Long travelPackageId, String hotelName, String destination, BigDecimal weekPrice) {
+        this.travelPackageId = travelPackageId;
+        this.hotelName = hotelName;
+        this.destination = destination;
+        this.weekPrice = weekPrice;
+    }
+
     public Long getTravelPackageId() {
         return travelPackageId;
     }
