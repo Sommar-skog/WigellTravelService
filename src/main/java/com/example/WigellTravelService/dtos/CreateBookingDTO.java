@@ -10,6 +10,14 @@ public class CreateBookingDTO {
 
     private Integer numberOfWeeks;
 
+    public CreateBookingDTO() {}
+
+    public CreateBookingDTO(Long travelPackageId, LocalDate startDate, Integer numberOfWeeks) {
+        this.travelPackageId = travelPackageId;
+        this.startDate = startDate;
+        this.numberOfWeeks = numberOfWeeks;
+    }
+
     public Long getTravelPackageId() {
         return travelPackageId;
     }

@@ -40,6 +40,15 @@ public class TravelBooking {
         this.cancelled = false;
     }
 
+    public TravelBooking(Long bookingId, LocalDate startDate, LocalDate endDate, int numberOfWeeks, BigDecimal totalPrice, boolean cancelled, TravelCustomer travelCustomer) {
+        this.bookingId = bookingId;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.numberOfWeeks = numberOfWeeks;
+        this.totalPrice = totalPrice;
+        this.cancelled = cancelled;
+    }
+
     public Long getBookingId() {
         return bookingId;
     }

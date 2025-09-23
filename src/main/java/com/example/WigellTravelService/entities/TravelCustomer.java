@@ -28,6 +28,13 @@ public class TravelCustomer {
 
     }
 
+    public TravelCustomer(Long customerId, String customerName, String username, String password) {
+        this.customerId = customerId;
+        this.customerName = customerName;
+        this.username = username;
+        this.password = password;
+    }
+
     public Long getCustomerId() {
         return customerId;
     }
