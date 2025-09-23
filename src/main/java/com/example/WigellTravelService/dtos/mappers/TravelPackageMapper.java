@@ -12,6 +12,7 @@ public class TravelPackageMapper {
         dto.setDestination(travelPackage.getDestination());
         dto.setHotelName(travelPackage.getHotelName());
         dto.setWeekPrice(travelPackage.getWeekPrice());
+        dto.setActive(travelPackage.isActive());
         return dto;
     }
 }

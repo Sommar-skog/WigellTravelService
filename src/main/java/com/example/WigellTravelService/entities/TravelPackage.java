@@ -21,7 +21,11 @@ public class TravelPackage {
     @Column(nullable = false, precision = 7, scale = 2)
     private BigDecimal weekPrice;
 
+    @Column(nullable = false)
+    private boolean isActive;
+
     public TravelPackage() {
+        isActive = true;
 
     }
 
@@ -30,6 +34,7 @@ public class TravelPackage {
         this.hotelName = hotelName;
         this.destination = destination;
         this.weekPrice = weekPrice;
+        this.isActive = true;
     }
 
     public Long getTravelPackageId() {
@@ -64,6 +69,14 @@ public class TravelPackage {
         this.weekPrice = price;
     }
 
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
     @Override
     public String toString() {
         return "TravelPackage{" +
@@ -71,6 +84,7 @@ public class TravelPackage {
                 ", hotelName='" + hotelName + '\'' +
                 ", destination='" + destination + '\'' +
                 ", weekPrice=" + weekPrice +
+                ", isActive=" + isActive +
                 '}';
     }
 }
