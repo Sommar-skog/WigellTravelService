@@ -2,6 +2,7 @@ package com.example.WigellTravelService.services;
 
 import com.example.WigellTravelService.dtos.AddTravelPackageDTO;
 import com.example.WigellTravelService.dtos.UpdateTravelPackageDTO;
+import com.example.WigellTravelService.entities.TravelBooking;
 import com.example.WigellTravelService.entities.TravelPackage;
 import com.example.WigellTravelService.repositories.TravelPackageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,8 +63,10 @@ public class TravelPackageServiceImpl implements TravelPackageService {
     @Override
     public String removeTravelPackage(Long travelPackageId) {
         TravelPackage travelPackageToRemove = getTravelPackageById(travelPackageId);
-        travelPackageRepository.delete(travelPackageToRemove);
-        return "Travel Package Removed with id  [" + travelPackageId + "] successfully";
+        cancelBookingsOnTravelPackage(travelPackageToRemove.getBookingList());
+        travelPackageToRemove.setActive(false);
+        travelPackageRepository.save(travelPackageToRemove);
+        return "Travel Package with id  [" + travelPackageId + "] successfully set to inactive. All bookings on it cancelled";
     }
 
     public TravelPackage getTravelPackageById(Long travelPackageId) {
@@ -124,5 +127,11 @@ public class TravelPackageServiceImpl implements TravelPackageService {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Week price must be between 0.01 and 99999.99");
             }
         }
+    }
+
+    private void cancelBookingsOnTravelPackage(List<TravelBooking> bookings) {
+        bookings.forEach(booking -> {
+            booking.setCancelled(true);
+        });
     }
 }

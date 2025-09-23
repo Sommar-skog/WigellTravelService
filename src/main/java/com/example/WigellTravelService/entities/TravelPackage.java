@@ -3,6 +3,8 @@ package com.example.WigellTravelService.entities;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "travel_package")
@@ -24,9 +26,12 @@ public class TravelPackage {
     @Column(nullable = false)
     private boolean isActive;
 
+    @OneToMany(mappedBy = "travelPackage")
+    private List<TravelBooking> bookingList;
+
     public TravelPackage() {
         isActive = true;
-
+        bookingList = new ArrayList<>();
     }
 
     public TravelPackage(Long travelPackageId, String hotelName, String destination, BigDecimal weekPrice) {
@@ -35,6 +40,7 @@ public class TravelPackage {
         this.destination = destination;
         this.weekPrice = weekPrice;
         this.isActive = true;
+        this.bookingList = new ArrayList<>();
     }
 
     public Long getTravelPackageId() {
@@ -77,6 +83,14 @@ public class TravelPackage {
         isActive = active;
     }
 
+    public List<TravelBooking> getBookingList() {
+        return bookingList;
+    }
+
+    public void setBookingList(List<TravelBooking> bookingList) {
+        this.bookingList = bookingList;
+    }
+
     @Override
     public String toString() {
         return "TravelPackage{" +
@@ -85,6 +99,7 @@ public class TravelPackage {
                 ", destination='" + destination + '\'' +
                 ", weekPrice=" + weekPrice +
                 ", isActive=" + isActive +
+                ", bookingList=" + bookingList +
                 '}';
     }
 }
