@@ -6,12 +6,12 @@ INSERT INTO travel_customer(customer_name, username, password) VALUES
                                                                    ('Alexander', 'alex','{noop}alex');
 
 -- TravelPaclages
-INSERT INTO travel_package (hotel_name, destination, week_price) VALUES
-                                                                     ('Hotel Lumière', 'Paris, France', 8500.00),
-                                                                     ('Hotel Colosseo', 'Rome, Italy', 7800.00),
-                                                                     ('Hotel Branden', 'Berlin, Germany', 7200.00),
-                                                                     ('Hotel Sol', 'Madrid, Spain', 6900.00),
-                                                                     ('Hotel Mar', 'Lisbon, Portugal', 7100.00);
+INSERT INTO travel_package (hotel_name, destination, week_price, is_active) VALUES
+                                                                     ('Hotel Lumière', 'Paris, France', 8500.00, true),
+                                                                     ('Hotel Colosseo', 'Rome, Italy', 7800.00, true),
+                                                                     ('Hotel Branden', 'Berlin, Germany', 7200.00, true),
+                                                                     ('Hotel Sol', 'Madrid, Spain', 6900.00, true),
+                                                                     ('Hotel Mar', 'Lisbon, Portugal', 7100.00, true);
 
 -- Amanda
 INSERT INTO travel_booking (start_date, end_date, number_of_weeks, total_price, cancelled, customer_id, travel_package_id) VALUES

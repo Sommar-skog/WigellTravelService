@@ -71,8 +71,8 @@ public class TravelAdminController {
         return ResponseEntity.ok(TravelPackageMapper.toDTO(travelPackageService.updateTravelPackage(updateTravelPackageDTO)));
     }
 
-    @DeleteMapping("/removetravel/{id}")
-    public ResponseEntity<String> removeTravelPackage(@PathVariable Long id) {
-        return ResponseEntity.ok(travelPackageService.removeTravelPackage(id));
+    @PutMapping("/removetravel/{id}")
+    public ResponseEntity<TravelPackageDTO> removeTravelPackage(@PathVariable Long id) {
+        return ResponseEntity.ok(TravelPackageMapper.toDTO(travelPackageService.removeTravelPackage(id)));
     }
 }

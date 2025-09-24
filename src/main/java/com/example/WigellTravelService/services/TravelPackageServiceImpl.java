@@ -60,13 +60,14 @@ public class TravelPackageServiceImpl implements TravelPackageService {
         return travelPackageRepository.save(travelPackageToUpdate);
     }
 
+    //Instead of deleting travel-packaged it's set to Active=False and bookings are cancelled. So that statistics
+    //will not be affected
     @Override
-    public String removeTravelPackage(Long travelPackageId) {
+    public TravelPackage removeTravelPackage(Long travelPackageId) {
         TravelPackage travelPackageToRemove = getTravelPackageById(travelPackageId);
         cancelBookingsOnTravelPackage(travelPackageToRemove.getBookingList());
         travelPackageToRemove.setActive(false);
-        travelPackageRepository.save(travelPackageToRemove);
-        return "Travel Package with id  [" + travelPackageId + "] successfully set to inactive. All bookings on it cancelled";
+        return travelPackageRepository.save(travelPackageToRemove);
     }
 
     public TravelPackage getTravelPackageById(Long travelPackageId) {

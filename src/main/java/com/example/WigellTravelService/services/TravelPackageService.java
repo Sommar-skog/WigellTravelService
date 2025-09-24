@@ -1,6 +1,7 @@
 package com.example.WigellTravelService.services;
 
 import com.example.WigellTravelService.dtos.AddTravelPackageDTO;
+import com.example.WigellTravelService.dtos.TravelPackageDTO;
 import com.example.WigellTravelService.dtos.UpdateTravelPackageDTO;
 import com.example.WigellTravelService.entities.TravelPackage;
 
@@ -16,7 +17,7 @@ public interface TravelPackageService {
 
     TravelPackage updateTravelPackage(UpdateTravelPackageDTO updateTravelPackageDTO);
 
-    String removeTravelPackage(Long tripId);
+    TravelPackage removeTravelPackage(Long tripId);
 
     TravelPackage getTravelPackageById(Long tripId);
 }
