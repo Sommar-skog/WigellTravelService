@@ -14,7 +14,6 @@ import java.util.List;
 
 @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 @RestController
-@RequestMapping("/api/wigelltravels/v1")
 public class TravelCommonController {
 
     private final TravelPackageService travelPackageService;

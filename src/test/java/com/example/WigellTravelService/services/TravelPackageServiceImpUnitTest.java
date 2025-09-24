@@ -2,6 +2,8 @@ package com.example.WigellTravelService.services;
 
 import com.example.WigellTravelService.dtos.AddTravelPackageDTO;
 import com.example.WigellTravelService.dtos.UpdateTravelPackageDTO;
+import com.example.WigellTravelService.entities.TravelBooking;
+import com.example.WigellTravelService.entities.TravelCustomer;
 import com.example.WigellTravelService.entities.TravelPackage;
 import com.example.WigellTravelService.repositories.TravelPackageRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,30 +44,31 @@ class TravelPackageServiceImpUnitTest {
 
         testAddTravelPackageDTO = new AddTravelPackageDTO("Test Hotel", "Test Destination", new BigDecimal("7000.00"));
         testUpdateTravelPackageDTO = new UpdateTravelPackageDTO(-1L, "Test Hotel Update", "Test Destination Update", new BigDecimal("5000.00"));
-        testTravelPackage = new TravelPackage(-1L,"TestHotel", "TestDestination", new BigDecimal("10000.00"));
+        testTravelPackage = new TravelPackage(-1L,"TestHotel", "TestDestination", new BigDecimal("10000.00"), true);
     }
-
 
     @Test
     void getAllTravelPackagesShouldReturnListOfAllTravelPackages() {
-        when(mockTravelPackageRepository.findAll()).thenReturn(List.of(testTravelPackage));
+        when(mockTravelPackageRepository.findAllByActiveTrue()).thenReturn(List.of(testTravelPackage));
 
         List<TravelPackage> travelPackages = travelPackageService.getAllTravelPackages();
         List<TravelPackage> expectedTravelPackages = List.of(testTravelPackage);
 
+        assertNotNull(travelPackages);
         assertEquals(expectedTravelPackages, travelPackages);
         assertEquals(travelPackages.size(), expectedTravelPackages.size());
-        verify(mockTravelPackageRepository).findAll();
+        verify(mockTravelPackageRepository).findAllByActiveTrue();
     }
 
     @Test
     void getAllTravelPackagesShouldReturnEmptyListOfTravelPackagesWhenNoPackagesExist() {
-        when(mockTravelPackageRepository.findAll()).thenReturn(List.of());
+        when(mockTravelPackageRepository.findAllByActiveTrue()).thenReturn(List.of());
 
         List<TravelPackage> travelPackages = travelPackageService.getAllTravelPackages();
 
+        assertNotNull(travelPackages);
         assertTrue(travelPackages.isEmpty());
-        verify(mockTravelPackageRepository).findAll();
+        verify(mockTravelPackageRepository).findAllByActiveTrue();
     }
 
     @Test
@@ -78,6 +82,8 @@ class TravelPackageServiceImpUnitTest {
         verify(mockTravelPackageRepository).save(travelPackageArgumentCaptor.capture());
 
         TravelPackage savedTravelPackage = travelPackageArgumentCaptor.getValue();
+
+        assertNotNull(savedTravelPackage);
         assertEquals(testAddTravelPackageDTO.getHotelName(), savedTravelPackage.getHotelName());
         assertEquals(testAddTravelPackageDTO.getDestination(), savedTravelPackage.getDestination());
         assertEquals(testAddTravelPackageDTO.getWeekPrice(), savedTravelPackage.getWeekPrice());
@@ -195,18 +201,20 @@ class TravelPackageServiceImpUnitTest {
 
         TravelPackage updatedTravelPackage = travelPackageService.updateTravelPackage(testUpdateTravelPackageDTO);
 
-        verify(mockTravelPackageRepository).save(testTravelPackage);
-        verify(mockTravelPackageRepository).findById(testUpdateTravelPackageDTO.getTravelPackageId());
+        assertNotNull(updatedTravelPackage);
 
         assertEquals(testUpdateTravelPackageDTO.getHotelName(), updatedTravelPackage.getHotelName());
         assertEquals(testUpdateTravelPackageDTO.getDestination(), updatedTravelPackage.getDestination());
         assertEquals(testUpdateTravelPackageDTO.getWeekPrice(), updatedTravelPackage.getWeekPrice());
         assertEquals(testUpdateTravelPackageDTO.getTravelPackageId(), updatedTravelPackage.getTravelPackageId());
+
+        verify(mockTravelPackageRepository).save(testTravelPackage);
+        verify(mockTravelPackageRepository).findById(testUpdateTravelPackageDTO.getTravelPackageId());
     }
 
     @Test
     void updateTravelPackageShouldNotUpdateHotelNameWhenHotelNameIsNull(){
-        TravelPackage travelPackage = new TravelPackage(-2L, "Hotel", "Destination", new BigDecimal("7000.00"));
+        TravelPackage travelPackage = new TravelPackage(-2L, "Hotel", "Destination", new BigDecimal("7000.00"), true);
         UpdateTravelPackageDTO dto  = new UpdateTravelPackageDTO(-2L, null, "Destination Updated", new BigDecimal("8000.00"));
 
         when(mockTravelPackageRepository.findById(dto.getTravelPackageId())).thenReturn(Optional.of(travelPackage));
@@ -215,6 +223,7 @@ class TravelPackageServiceImpUnitTest {
 
         TravelPackage updatedTravelPackage = travelPackageService.updateTravelPackage(dto);
 
+        assertNotNull(updatedTravelPackage);
         verify(mockTravelPackageRepository).findById(dto.getTravelPackageId());
         assertEquals("Hotel", updatedTravelPackage.getHotelName());
         assertEquals("Destination Updated", updatedTravelPackage.getDestination());
@@ -273,11 +282,9 @@ class TravelPackageServiceImpUnitTest {
         verify(mockTravelPackageRepository, never()).save(any());
     }
 
-
-    //TODO uppdatera om destination delas up i Land och Stad
     @Test
     void updateTravelPackageShouldNotUpdateDestinationWhenDestinationIsNull(){
-        TravelPackage travelPackage = new TravelPackage(-2L, "Hotel", "Destination", new BigDecimal("7000.00"));
+        TravelPackage travelPackage = new TravelPackage(-2L, "Hotel", "Destination", new BigDecimal("7000.00"), true);
         UpdateTravelPackageDTO dto  = new UpdateTravelPackageDTO(-2L, "Hotel Updated", null, new BigDecimal("8000.00"));
 
         when(mockTravelPackageRepository.findById(dto.getTravelPackageId())).thenReturn(Optional.of(travelPackage));
@@ -286,6 +293,7 @@ class TravelPackageServiceImpUnitTest {
 
         TravelPackage updatedTravelPackage = travelPackageService.updateTravelPackage(dto);
 
+        assertNotNull(updatedTravelPackage);
         verify(mockTravelPackageRepository).findById(dto.getTravelPackageId());
         assertEquals("Hotel Updated", updatedTravelPackage.getHotelName());
         assertEquals("Destination", updatedTravelPackage.getDestination());
@@ -293,7 +301,7 @@ class TravelPackageServiceImpUnitTest {
         assertSame(travelPackage, updatedTravelPackage);
         verify(mockTravelPackageRepository).save(updatedTravelPackage);
     }
-    //TODO uppdatera om destination delas up i Land och Stad
+
     @Test
     void updateTravelPackageShouldThrowExceptionWhenDestinationIsMoreThan50Characters() {
         String moreThanFiftyCharacters = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
@@ -311,7 +319,6 @@ class TravelPackageServiceImpUnitTest {
         verify(mockTravelPackageRepository, never()).save(any());
     }
 
-    //TODO uppdatera om destination delas up i Land och Stad
     @Test
     void updateTravelPackageShouldThrowExceptionWhenDestinationIsBlank(){
         String blankString = " ";
@@ -331,7 +338,7 @@ class TravelPackageServiceImpUnitTest {
 
     @Test
     void updateTravelPackageShouldNotUpdateWeekPriceWhenWeekPriceIsNull(){
-        TravelPackage travelPackage = new TravelPackage(-2L, "Hotel", "Destination", new BigDecimal("7000.00"));
+        TravelPackage travelPackage = new TravelPackage(-2L, "Hotel", "Destination", new BigDecimal("7000.00"), true);
         UpdateTravelPackageDTO dto  = new UpdateTravelPackageDTO(-2L, "Hotel Updated", "Destination Updated", null);
 
         when(mockTravelPackageRepository.findById(dto.getTravelPackageId())).thenReturn(Optional.of(travelPackage));
@@ -340,6 +347,7 @@ class TravelPackageServiceImpUnitTest {
 
         TravelPackage updatedTravelPackage = travelPackageService.updateTravelPackage(dto);
 
+        assertNotNull(updatedTravelPackage);
         verify(mockTravelPackageRepository).findById(dto.getTravelPackageId());
         assertEquals("Hotel Updated", updatedTravelPackage.getHotelName());
         assertEquals("Destination Updated", updatedTravelPackage.getDestination());
@@ -347,7 +355,6 @@ class TravelPackageServiceImpUnitTest {
         assertSame(travelPackage, updatedTravelPackage);
         verify(mockTravelPackageRepository).save(updatedTravelPackage);
     }
-
 
     @Test
     void updateTravelPackageShouldThrowExceptionWhenWhenWeekPriceIsLessThan0_01(){
@@ -383,10 +390,79 @@ class TravelPackageServiceImpUnitTest {
         verify(mockTravelPackageRepository, never()).save(any());
     }
 
-
-    //TODO gär när logiken är fixad!
     @Test
-    void removeTravelPackage() {
+    void updateTravelPackageShouldThrowExceptionWhenUpdateTravelPackageNotFound() {
+        Long nonExistingTravelPackageId = -2L;
+        UpdateTravelPackageDTO dto = new UpdateTravelPackageDTO(nonExistingTravelPackageId, "hotelUpdate", "updatedDestination", new BigDecimal("1000.00"));
+        when(mockTravelPackageRepository.findById(nonExistingTravelPackageId)).thenReturn(Optional.empty());
+
+        ResponseStatusException responseStatusException = assertThrows(ResponseStatusException.class, () -> {
+            travelPackageService.updateTravelPackage(dto);
+        });
+
+        assertEquals(HttpStatus.NOT_FOUND, responseStatusException.getStatusCode());
+        assertEquals("TravelPackage with id -2 not found", responseStatusException.getReason());
+        verify(mockTravelPackageRepository).findById(nonExistingTravelPackageId);
+        verify(mockTravelPackageRepository, never()).save(any());
+    }
+
+
+    @Test
+    void removeTravelPackageShouldSetActiveToFalse() {
+        when(mockTravelPackageRepository.findById(testTravelPackage.getTravelPackageId())).thenReturn(Optional.of(testTravelPackage));
+        when(mockTravelPackageRepository.save(any(TravelPackage.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        TravelPackage updated = travelPackageService.removeTravelPackage(testTravelPackage.getTravelPackageId());
+
+        assertNotNull(updated);
+        assertFalse(updated.isActive());
+        verify(mockTravelPackageRepository).findById(testTravelPackage.getTravelPackageId());
+        verify(mockTravelPackageRepository).save(any(TravelPackage.class));
+    }
+
+    @Test
+    void removeTravelPackageShouldCancelAllBookings(){
+        TravelBooking booking = new TravelBooking(-20L, LocalDate.of(2025,9,24), LocalDate.of(2025,9,30), 1, new BigDecimal("7000.00"), false,
+                new TravelCustomer(), new TravelPackage());
+        testTravelPackage.setBookingList(List.of(booking));
+        when(mockTravelPackageRepository.findById(testTravelPackage.getTravelPackageId())).thenReturn(Optional.of(testTravelPackage));
+        when(mockTravelPackageRepository.save(any(TravelPackage.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        TravelPackage updated = travelPackageService.removeTravelPackage(testTravelPackage.getTravelPackageId());
+
+        assertTrue(updated.getBookingList().stream().allMatch(TravelBooking::isCancelled));
+        assertNotNull(updated);
+        verify(mockTravelPackageRepository).findById(testTravelPackage.getTravelPackageId());
+        verify(mockTravelPackageRepository).save(any(TravelPackage.class));
+    }
+
+    @Test
+    void removeTravelPackageWithEmptyBookingListShouldNotFail(){
+
+        when(mockTravelPackageRepository.findById(testTravelPackage.getTravelPackageId())).thenReturn(Optional.of(testTravelPackage));
+        when(mockTravelPackageRepository.save(any(TravelPackage.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        TravelPackage updated = travelPackageService.removeTravelPackage(testTravelPackage.getTravelPackageId());
+
+        assertTrue(updated.getBookingList().isEmpty());
+        assertNotNull(updated);
+        verify(mockTravelPackageRepository).findById(testTravelPackage.getTravelPackageId());
+        verify(mockTravelPackageRepository).save(any(TravelPackage.class));
+    }
+
+    @Test
+    void removeTravelPackageShouldThrowExceptionWhenTravelPackageDoesNotExist() {
+        Long nonExistingTravelPackageId = -2L;
+        when(mockTravelPackageRepository.findById(nonExistingTravelPackageId)).thenReturn(Optional.empty());
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            travelPackageService.removeTravelPackage(nonExistingTravelPackageId);
+        });
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals("TravelPackage with id -2 not found", exception.getReason());
+        verify(mockTravelPackageRepository).findById(nonExistingTravelPackageId);
+        verify(mockTravelPackageRepository, never()).save(any());
     }
 
     @Test

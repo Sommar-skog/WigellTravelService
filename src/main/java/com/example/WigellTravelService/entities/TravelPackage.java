@@ -34,12 +34,12 @@ public class TravelPackage {
         bookingList = new ArrayList<>();
     }
 
-    public TravelPackage(Long travelPackageId, String hotelName, String destination, BigDecimal weekPrice) {
+    public TravelPackage(Long travelPackageId, String hotelName, String destination, BigDecimal weekPrice, Boolean active) {
         this.travelPackageId = travelPackageId;
         this.hotelName = hotelName;
         this.destination = destination;
         this.weekPrice = weekPrice;
-        this.active = true;
+        this.active = active;
         this.bookingList = new ArrayList<>();
     }
 

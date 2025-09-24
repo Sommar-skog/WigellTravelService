@@ -3,6 +3,7 @@ package com.example.WigellTravelService.controllers;
 import com.example.WigellTravelService.dtos.CreateBookingDTO;
 import com.example.WigellTravelService.entities.TravelBooking;
 import com.example.WigellTravelService.entities.TravelCustomer;
+import com.example.WigellTravelService.entities.TravelPackage;
 import com.example.WigellTravelService.repositories.TravelBookingRepository;
 import com.example.WigellTravelService.repositories.TravelCustomerRepository;
 import com.example.WigellTravelService.services.TravelBookingService;
@@ -13,8 +14,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.*;
@@ -24,7 +28,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import java.math.BigDecimal;
-import java.security.Principal;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -43,9 +46,11 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
     private ObjectMapper objectMapper;
 
     @MockitoBean
+    // @MockitoSpyBean
     private TravelBookingRepository travelBookingRepository;
 
     @MockitoBean
+    //@MockitoSpyBean
     private TravelCustomerRepository travelCustomerRepository;
 
     private final TravelCustomerService travelCustomerService;
@@ -57,9 +62,8 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
         this.travelBookingService = travelBookingService;
     }
 
-
-
     @Test
+    @WithMockUser(username = "a", roles = "USER")
     void bookTrip() throws Exception {
         TravelCustomer travelCustomer = new TravelCustomer(-1L, "a", "a", "a");
         TravelBooking travelBooking = new TravelBooking(
@@ -67,9 +71,10 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
                 LocalDate.of(2025,9,23),
                 LocalDate.of(2025,9,29),
                 1,
-                new BigDecimal("700000.00"),
+                new BigDecimal("7000.00"),
                 false,
-                travelCustomer);
+                travelCustomer,
+                new TravelPackage(-10L, "HotelTest", "Paris, France", new BigDecimal("7000.00"),true));
         when(travelBookingRepository.save(any(TravelBooking.class))).thenReturn(travelBooking);
         when(travelCustomerRepository.findByUsername(any(String.class))).thenReturn(Optional.of(travelCustomer));
 
@@ -77,19 +82,17 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
 
         mockMvc.perform(post("/booktrip")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(createBookingDTO))
-                    .principal(() -> "a"))
+                    .content(objectMapper.writeValueAsString(createBookingDTO)))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.bookedBy").value("a"))
                 .andExpect(jsonPath("$.bookingId").value(-1))
                 .andExpect(jsonPath("$.hotelName").value("HotelTest"))
-                .andExpect(jsonPath("$.destination").value("Paris"))
+                .andExpect(jsonPath("$.destination").value("Paris, France"))
                 .andExpect(jsonPath("$.startDate").value("2025-09-23"))
                 .andExpect(jsonPath("$.weeks").value(1))
-                .andExpect(jsonPath("$.totalPriceInSek").value(700000.00))
+                .andExpect(jsonPath("$.totalPriceInSek").value(7000.00))
                 .andExpect(jsonPath("$.cancelled").value(false));
-        verify(travelBookingService).bookTrip(any(CreateBookingDTO.class), any(Principal.class));
         verify(travelBookingRepository, times(1)).save(any(TravelBooking.class));
         verify(travelCustomerRepository, times(1)).findByUsername("a");
     }

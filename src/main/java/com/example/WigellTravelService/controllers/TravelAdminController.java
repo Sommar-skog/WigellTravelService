@@ -19,7 +19,6 @@ import java.util.List;
 
 @PreAuthorize("hasRole('ADMIN')")
 @RestController
-@RequestMapping("/api/wigelltravels/v1")
 public class TravelAdminController {
 
     private final TravelBookingService travelBookingService;

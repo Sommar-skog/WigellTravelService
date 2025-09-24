@@ -16,7 +16,6 @@ import java.util.List;
 
 @PreAuthorize("hasRole('USER')")
 @RestController
-@RequestMapping("/api/wigelltravels/v1")
 public class TravelCustomerController {
 
 
