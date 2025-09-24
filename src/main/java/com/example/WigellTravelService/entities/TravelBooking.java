@@ -33,7 +33,7 @@ public class TravelBooking {
     private TravelCustomer travelCustomer;
 
     @ManyToOne
-    @JoinColumn(name= "trip_id", nullable = false)
+    @JoinColumn(name= "travel_package_id", nullable = false)
     private TravelPackage travelPackage;
 
     public TravelBooking() {
