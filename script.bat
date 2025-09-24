@@ -6,7 +6,7 @@ docker rm wigell-travel-service
 echo Deleting image wigell-travel-service
 docker rmi wigell-travel-service
 echo Running mvn package
-call mvn package -DskipTests
+call mvn package
 echo Creating image wigell-travel-service
 docker build -t wigell-travel-service .
 echo Creating and running container wigell-travel-service
