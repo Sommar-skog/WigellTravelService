@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.jar.JarOutputStream;
 
 @Service
 public class TravelPackageServiceImpl implements TravelPackageService {
@@ -25,7 +26,7 @@ public class TravelPackageServiceImpl implements TravelPackageService {
 
     @Override
     public List<TravelPackage> getAllTravelPackages() {
-        return travelPackageRepository.findAll();
+        return travelPackageRepository.findAllByActiveTrue();
     }
 
     @Override
@@ -36,6 +37,8 @@ public class TravelPackageServiceImpl implements TravelPackageService {
         travelPackage.setHotelName(addTravelPackageDTO.getHotelName().trim());
         travelPackage.setDestination(addTravelPackageDTO.getDestination().trim());
         travelPackage.setWeekPrice(addTravelPackageDTO.getWeekPrice());
+        travelPackage.setActive(true);
+        System.out.println(travelPackage);
 
         return travelPackageRepository.save(travelPackage);
     }
@@ -67,6 +70,7 @@ public class TravelPackageServiceImpl implements TravelPackageService {
         TravelPackage travelPackageToRemove = getTravelPackageById(travelPackageId);
         cancelBookingsOnTravelPackage(travelPackageToRemove.getBookingList());
         travelPackageToRemove.setActive(false);
+        System.out.println(travelPackageToRemove.isActive());
         return travelPackageRepository.save(travelPackageToRemove);
     }
 

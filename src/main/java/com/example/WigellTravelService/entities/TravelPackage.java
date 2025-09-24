@@ -24,13 +24,13 @@ public class TravelPackage {
     private BigDecimal weekPrice;
 
     @Column(nullable = false)
-    private boolean isActive;
+    private boolean active;
 
     @OneToMany(mappedBy = "travelPackage")
     private List<TravelBooking> bookingList;
 
     public TravelPackage() {
-        isActive = true;
+        active = true;
         bookingList = new ArrayList<>();
     }
 
@@ -39,7 +39,7 @@ public class TravelPackage {
         this.hotelName = hotelName;
         this.destination = destination;
         this.weekPrice = weekPrice;
-        this.isActive = true;
+        this.active = true;
         this.bookingList = new ArrayList<>();
     }
 
@@ -76,11 +76,11 @@ public class TravelPackage {
     }
 
     public boolean isActive() {
-        return isActive;
+        return active;
     }
 
     public void setActive(boolean active) {
-        isActive = active;
+        this.active = active;
     }
 
     public List<TravelBooking> getBookingList() {
@@ -98,7 +98,7 @@ public class TravelPackage {
                 ", hotelName='" + hotelName + '\'' +
                 ", destination='" + destination + '\'' +
                 ", weekPrice=" + weekPrice +
-                ", isActive=" + isActive +
+                ", active=" + active +
                 ", bookingList=" + bookingList +
                 '}';
     }

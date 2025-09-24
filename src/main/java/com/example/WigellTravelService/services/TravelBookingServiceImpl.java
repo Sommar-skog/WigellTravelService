@@ -62,7 +62,7 @@ public class TravelBookingServiceImpl implements TravelBookingService {
 
     @Override
     public List<TravelBooking> getMyBookings(Principal principal) {
-        return travelBookingRepository.findByTravelCustomerUsername(principal.getName());
+        return travelBookingRepository.findByTravelCustomerUsernameAndCancelledFalse(principal.getName());
     }
 
     @Override

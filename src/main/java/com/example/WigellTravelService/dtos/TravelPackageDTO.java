@@ -8,18 +8,18 @@ public class TravelPackageDTO {
     private String destination;
     private String hotelName;
     private BigDecimal weekPrice;
-    private boolean isActive;
+    private boolean active;
 
     public TravelPackageDTO() {
 
     }
 
-    public TravelPackageDTO(Long travelPackageId, String destination, String hotelName, BigDecimal weekPrice, boolean isActive) {
+    public TravelPackageDTO(Long travelPackageId, String destination, String hotelName, BigDecimal weekPrice, boolean active) {
         this.travelPackageId = travelPackageId;
         this.destination = destination;
         this.hotelName = hotelName;
         this.weekPrice = weekPrice;
-        this.isActive = isActive;
+        this.active = active;
     }
 
     public Long getTravelPackageId() {
@@ -55,11 +55,11 @@ public class TravelPackageDTO {
     }
 
     public boolean isActive() {
-        return isActive;
+        return active;
     }
 
     public void setActive(boolean active) {
-        isActive = active;
+        this.active = active;
     }
 
     @Override
@@ -69,7 +69,7 @@ public class TravelPackageDTO {
                 ", destination='" + destination + '\'' +
                 ", hotelName='" + hotelName + '\'' +
                 ", weekPrice=" + weekPrice +
-                ", isActive=" + isActive +
+                ", active=" + active +
                 '}';
     }
 }
