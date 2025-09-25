@@ -5,6 +5,7 @@ import com.example.WigellTravelService.dtos.UpdateTravelPackageDTO;
 import com.example.WigellTravelService.entities.TravelBooking;
 import com.example.WigellTravelService.entities.TravelPackage;
 import com.example.WigellTravelService.repositories.TravelPackageRepository;
+import com.example.WigellTravelService.utils.LogMessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -12,12 +13,15 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.jar.JarOutputStream;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Service
 public class TravelPackageServiceImpl implements TravelPackageService {
 
     private final TravelPackageRepository travelPackageRepository;
+
+    private static final Logger USER_LOGGER = LogManager.getLogger("userLog");
 
     @Autowired
     public TravelPackageServiceImpl(TravelPackageRepository travelPackageRepository) {
@@ -38,7 +42,8 @@ public class TravelPackageServiceImpl implements TravelPackageService {
         travelPackage.setDestination(addTravelPackageDTO.getDestination().trim());
         travelPackage.setWeekPrice(addTravelPackageDTO.getWeekPrice());
         travelPackage.setActive(true);
-        System.out.println(travelPackage);
+
+        USER_LOGGER.info(LogMessageBuilder.adminAddedNewTravelPackade(addTravelPackageDTO.getDestination()));
 
         return travelPackageRepository.save(travelPackage);
     }
@@ -60,6 +65,11 @@ public class TravelPackageServiceImpl implements TravelPackageService {
             travelPackageToUpdate.setWeekPrice(updateTravelPackageDTO.getWeekPrice());
         }
 
+        String logMessage = LogMessageBuilder.adminUpdatedTravelPackade(travelPackageToUpdate.getTravelPackageId(),travelPackageToUpdate,updateTravelPackageDTO);
+        if (logMessage != null) {
+            USER_LOGGER.info(logMessage);
+        }
+
         return travelPackageRepository.save(travelPackageToUpdate);
     }
 
@@ -70,7 +80,9 @@ public class TravelPackageServiceImpl implements TravelPackageService {
         TravelPackage travelPackageToRemove = getTravelPackageById(travelPackageId);
         cancelBookingsOnTravelPackage(travelPackageToRemove.getBookingList());
         travelPackageToRemove.setActive(false);
-        System.out.println(travelPackageToRemove.isActive());
+
+        USER_LOGGER.info(LogMessageBuilder.adminRemovedTravelPackade(travelPackageToRemove.getTravelPackageId()));
+
         return travelPackageRepository.save(travelPackageToRemove);
     }
 

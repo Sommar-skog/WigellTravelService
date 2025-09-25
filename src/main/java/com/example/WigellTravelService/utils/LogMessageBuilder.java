@@ -16,8 +16,8 @@ public class LogMessageBuilder {
         return String.format("user canceled %d weeks of travel to [%s]", weeks, destination);
     }
 
-    public static String adminAddedNewTravelPackade(Long id,String destination) {
-        return String.format("admin added a new travel packade to [%s] with ID [%s]", destination, id);
+    public static String adminAddedNewTravelPackade(String destination) {
+        return String.format("admin added a new travel packade to [%s]", destination);
     }
 
     public static String adminRemovedTravelPackade(Long id) {
