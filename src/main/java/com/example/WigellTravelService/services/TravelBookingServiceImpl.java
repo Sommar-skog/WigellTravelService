@@ -5,6 +5,7 @@ import com.example.WigellTravelService.dtos.CreateBookingDTO;
 import com.example.WigellTravelService.entities.TravelBooking;
 import com.example.WigellTravelService.entities.TravelPackage;
 import com.example.WigellTravelService.repositories.TravelBookingRepository;
+import com.example.WigellTravelService.utils.LogMessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -49,16 +50,24 @@ public class TravelBookingServiceImpl implements TravelBookingService {
         newBooking.setTotalPrice(getTotalPrice(trip.getWeekPrice(), createBookingDTO.getNumberOfWeeks()));
         newBooking.setTravelCustomer(travelCustomerService.findTravelCustomerByUsername(principal.getName()));
 
-        USER_LOGGER.info();
+        USER_LOGGER.info(LogMessageBuilder.userBookedTrip(newBooking.getTravelPackage().getDestination(),newBooking.getNumberOfWeeks()));
+
         return travelBookingRepository.save(newBooking);
     }
 
     @Override
     public TravelBooking cancelTrip(CancelBookingDTO cancelBookingDTO, Principal principal) {
+        boolean wasCancelled = false;
          TravelBooking trip = validateCancelTrip(cancelBookingDTO, principal);
          if (isTripUpcoming(trip.getStartDate())) {
                 trip.setCancelled(true);
+                wasCancelled = true;
          }
+
+         if(wasCancelled) {
+             USER_LOGGER.info(LogMessageBuilder.userCanceledTrip(trip.getTravelPackage().getDestination(),trip.getNumberOfWeeks()));
+         }
+
         return travelBookingRepository.save(trip);
     }
 
