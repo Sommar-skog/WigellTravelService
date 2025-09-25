@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -37,6 +38,7 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
 
     @Autowired
@@ -53,14 +55,16 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
     //@MockitoSpyBean
     private TravelCustomerRepository travelCustomerRepository;
 
-    private final TravelCustomerService travelCustomerService;
-    private final TravelBookingService travelBookingService;
-
     @Autowired
+    private TravelCustomerService travelCustomerService;
+    @Autowired
+    private TravelBookingService travelBookingService;
+
+/*    @Autowired
     TravelCustomerControllerAndTravelBookingServiceIntegrationTest(TravelCustomerService travelCustomerService, TravelBookingService travelBookingService) {
         this.travelCustomerService = travelCustomerService;
         this.travelBookingService = travelBookingService;
-    }
+    }*/
 
     @Test
     @WithMockUser(username = "a", roles = "USER")
