@@ -4,7 +4,9 @@ import com.example.WigellTravelService.dtos.CancelBookingDTO;
 import com.example.WigellTravelService.dtos.CreateBookingDTO;
 import com.example.WigellTravelService.dtos.TravelBookingDTO;
 import com.example.WigellTravelService.dtos.mappers.TravelBookingMapper;
+import com.example.WigellTravelService.entities.TravelBooking;
 import com.example.WigellTravelService.services.TravelBookingService;
+import com.example.WigellTravelService.utils.CurrencyConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,21 +22,28 @@ public class TravelCustomerController {
 
 
     private final TravelBookingService travelBookingService;
+    private final CurrencyConverter currencyConverter;
 
     @Autowired
-    public TravelCustomerController(TravelBookingService travelBookingService) {
+    public TravelCustomerController(TravelBookingService travelBookingService, CurrencyConverter currencyConverter) {
         this.travelBookingService = travelBookingService;
+        this.currencyConverter = currencyConverter;
     }
 
 
     @PostMapping("/booktrip")
     public ResponseEntity<TravelBookingDTO> bookTrip(@RequestBody CreateBookingDTO createBookingDTO, Principal principal) {
-        return new ResponseEntity<>(TravelBookingMapper.toDTO(travelBookingService.bookTrip(createBookingDTO, principal)), HttpStatus.CREATED);
+        TravelBooking bookedTrip = travelBookingService.bookTrip(createBookingDTO, principal);
+        TravelBookingDTO bookingDTO = TravelBookingMapper.toDTO(bookedTrip,currencyConverter.convertSekToEur(bookedTrip.getTotalPrice()));
+
+        return new ResponseEntity<>(bookingDTO, HttpStatus.CREATED);
     }
 
     @PutMapping("/canceltrip")
     public ResponseEntity<TravelBookingDTO> cancelTrip(@RequestBody CancelBookingDTO cancelBookingDTO, Principal principal) {
-        return ResponseEntity.ok(TravelBookingMapper.toDTO(travelBookingService.cancelTrip(cancelBookingDTO, principal)));
+        TravelBooking canceledTrip = travelBookingService.cancelTrip(cancelBookingDTO, principal);
+        TravelBookingDTO bookingDTO = TravelBookingMapper.toDTO(canceledTrip,currencyConverter.convertSekToEur(canceledTrip.getTotalPrice()));
+        return ResponseEntity.ok(bookingDTO);
     }
 
     @GetMapping("/mybookings")
@@ -42,7 +51,10 @@ public class TravelCustomerController {
         List<TravelBookingDTO> dtoList = travelBookingService
                 .getMyBookings(principal)
                 .stream()
-                .map(TravelBookingMapper::toDTO)
+                .map(booking -> TravelBookingMapper.toDTO(
+                        booking,
+                        currencyConverter.convertSekToEur(booking.getTotalPrice())
+                ))
                 .toList();
         return ResponseEntity.ok(dtoList);
     }
