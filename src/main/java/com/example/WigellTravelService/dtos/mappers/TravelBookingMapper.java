@@ -17,7 +17,7 @@ public class TravelBookingMapper {
         dto.setStartDate(booking.getStartDate());
         dto.setWeeks(booking.getNumberOfWeeks());
         dto.setTotalPriceInSek(booking.getTotalPrice());
-        dto.setTotalPriceInEuro(priceEur);
+        dto.setTotalPriceInEuro(priceEur.setScale(2, BigDecimal.ROUND_HALF_UP));
         dto.setCancelled(booking.isCancelled());
         return dto;
     }
