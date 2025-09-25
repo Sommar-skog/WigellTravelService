@@ -15,6 +15,8 @@ import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Service
 public class TravelBookingServiceImpl implements TravelBookingService {
@@ -23,15 +25,14 @@ public class TravelBookingServiceImpl implements TravelBookingService {
     private final TravelPackageService travelPackageService;
     private final TravelCustomerService travelCustomerService;
 
+    private static final Logger USER_LOGGER = LogManager.getLogger("userLog");
+
     @Autowired
     public TravelBookingServiceImpl(TravelBookingRepository travelBookingRepository, TravelPackageService travelPackageService, TravelCustomerService travelCustomerService) {
         this.travelBookingRepository = travelBookingRepository;
         this.travelPackageService = travelPackageService;
         this.travelCustomerService = travelCustomerService;
     }
-
-    //TODO kom ihåg DTOs!
-
 
     //TODO Få in totalpriset i Euro också!
     @Override
@@ -48,6 +49,7 @@ public class TravelBookingServiceImpl implements TravelBookingService {
         newBooking.setTotalPrice(getTotalPrice(trip.getWeekPrice(), createBookingDTO.getNumberOfWeeks()));
         newBooking.setTravelCustomer(travelCustomerService.findTravelCustomerByUsername(principal.getName()));
 
+        USER_LOGGER.info();
         return travelBookingRepository.save(newBooking);
     }
 
