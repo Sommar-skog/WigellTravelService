@@ -17,14 +17,8 @@ public class CurrencyConverter {
     }
 
     public BigDecimal convertSekToEur(BigDecimal sek) {
-        String url = "https://v1.apiplugin.io/v1/currency/oHANfmYZ/convert";
         Map<String, Object> response = restClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path(url)
-                        .queryParam("amount", sek)
-                        .queryParam("from", "SEK")
-                        .queryParam("to", "EUR")
-                        .build())
+                .uri("https://v1.apiplugin.io/v1/currency/oHANfmYZ/convert?amount={amount}&from=SEK&to=EUR", sek)
                 .retrieve()
                 .body(new ParameterizedTypeReference<Map<String, Object>>() {});
 

@@ -7,6 +7,7 @@ import com.example.WigellTravelService.dtos.TravelPackageDTO;
 import com.example.WigellTravelService.dtos.UpdateTravelPackageDTO;
 import com.example.WigellTravelService.dtos.mappers.TravelBookingMapper;
 import com.example.WigellTravelService.dtos.mappers.TravelPackageMapper;
+import com.example.WigellTravelService.entities.TravelPackage;
 import com.example.WigellTravelService.services.TravelBookingService;
 import com.example.WigellTravelService.services.TravelPackageService;
 import com.example.WigellTravelService.utils.CurrencyConverter;
@@ -74,16 +75,22 @@ public class TravelAdminController {
 
     @PostMapping("/addtravel")
     public ResponseEntity<TravelPackageDTO> addTravelPackage(@RequestBody AddTravelPackageDTO addTravelPackageDTO) {
-        return new ResponseEntity<>(TravelPackageMapper.toDTO(travelPackageService.addTravelPackage(addTravelPackageDTO)), HttpStatus.CREATED);
+        TravelPackage travelPackage = travelPackageService.addTravelPackage(addTravelPackageDTO);
+        TravelPackageDTO dto = TravelPackageMapper.toDTO(travelPackage, currencyConverter.convertSekToEur(travelPackage.getWeekPrice()));
+        return new ResponseEntity<>(dto, HttpStatus.CREATED);
     }
 
     @PutMapping("updatetravel")
     public ResponseEntity<TravelPackageDTO> updateTravelPackage(@RequestBody UpdateTravelPackageDTO updateTravelPackageDTO) {
-        return ResponseEntity.ok(TravelPackageMapper.toDTO(travelPackageService.updateTravelPackage(updateTravelPackageDTO)));
+        TravelPackage travelPackage = travelPackageService.updateTravelPackage(updateTravelPackageDTO);
+        TravelPackageDTO dto = TravelPackageMapper.toDTO(travelPackage, currencyConverter.convertSekToEur(travelPackage.getWeekPrice()));
+        return ResponseEntity.ok(dto);
     }
 
     @PutMapping("/removetravel/{id}")
     public ResponseEntity<TravelPackageDTO> removeTravelPackage(@PathVariable Long id) {
-        return ResponseEntity.ok(TravelPackageMapper.toDTO(travelPackageService.removeTravelPackage(id)));
+        TravelPackage travelPackage = travelPackageService.removeTravelPackage(id);
+        TravelPackageDTO dto = TravelPackageMapper.toDTO(travelPackage, currencyConverter.convertSekToEur(travelPackage.getWeekPrice()));
+        return ResponseEntity.ok(dto);
     }
 }

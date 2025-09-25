@@ -8,17 +8,19 @@ public class TravelPackageDTO {
     private String destination;
     private String hotelName;
     private BigDecimal weekPrice;
+    private BigDecimal weekPriceEur;
     private boolean active;
 
     public TravelPackageDTO() {
 
     }
 
-    public TravelPackageDTO(Long travelPackageId, String destination, String hotelName, BigDecimal weekPrice, boolean active) {
+    public TravelPackageDTO(Long travelPackageId, String destination, String hotelName, BigDecimal weekPrice, BigDecimal weekPriceEur, boolean active) {
         this.travelPackageId = travelPackageId;
         this.destination = destination;
         this.hotelName = hotelName;
         this.weekPrice = weekPrice;
+        this.weekPriceEur = weekPriceEur;
         this.active = active;
     }
 
@@ -54,6 +56,14 @@ public class TravelPackageDTO {
         this.weekPrice = weekPrice;
     }
 
+    public BigDecimal getWeekPriceEur() {
+        return weekPriceEur;
+    }
+
+    public void setWeekPriceEur(BigDecimal weekPriceEur) {
+        this.weekPriceEur = weekPriceEur;
+    }
+
     public boolean isActive() {
         return active;
     }
@@ -69,6 +79,7 @@ public class TravelPackageDTO {
                 ", destination='" + destination + '\'' +
                 ", hotelName='" + hotelName + '\'' +
                 ", weekPrice=" + weekPrice +
+                ", weekPriceEur=" + weekPriceEur +
                 ", active=" + active +
                 '}';
     }
