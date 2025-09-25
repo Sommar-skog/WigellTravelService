@@ -51,6 +51,13 @@ public class TravelPackageServiceImpl implements TravelPackageService {
     @Override
     public TravelPackage updateTravelPackage(UpdateTravelPackageDTO updateTravelPackageDTO) {
         TravelPackage travelPackageToUpdate = getTravelPackageById(updateTravelPackageDTO.getTravelPackageId());
+
+        TravelPackage original = new TravelPackage();
+        original.setDestination(travelPackageToUpdate.getDestination());
+        original.setHotelName(travelPackageToUpdate.getHotelName());
+        original.setWeekPrice(travelPackageToUpdate.getWeekPrice());
+
+
         validateUpdateTravelPackage(updateTravelPackageDTO);
 
         if (updateTravelPackageDTO.getHotelName() != null) {
@@ -65,7 +72,7 @@ public class TravelPackageServiceImpl implements TravelPackageService {
             travelPackageToUpdate.setWeekPrice(updateTravelPackageDTO.getWeekPrice());
         }
 
-        String logMessage = LogMessageBuilder.adminUpdatedTravelPackade(travelPackageToUpdate.getTravelPackageId(),travelPackageToUpdate,updateTravelPackageDTO);
+        String logMessage = LogMessageBuilder.adminUpdatedTravelPackade(travelPackageToUpdate.getTravelPackageId(),original,updateTravelPackageDTO);
         if (logMessage != null) {
             USER_LOGGER.info(logMessage);
         }

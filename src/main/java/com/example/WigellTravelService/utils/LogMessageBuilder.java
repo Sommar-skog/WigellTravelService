@@ -9,11 +9,11 @@ import java.util.Objects;
 
 public class LogMessageBuilder {
     public static String userBookedTrip(String destination, int weeks) {
-        return String.format("user booked %d weeks of travel to [%s]", weeks, destination);
+        return String.format("user booked [%d] weeks of travel to [%s]", weeks, destination);
     }
 
     public static String userCanceledTrip(String destination, int weeks) {
-        return String.format("user canceled %d weeks of travel to [%s]", weeks, destination);
+        return String.format("user canceled [%d] weeks of travel to [%s]", weeks, destination);
     }
 
     public static String adminAddedNewTravelPackade(String destination) {
@@ -21,10 +21,11 @@ public class LogMessageBuilder {
     }
 
     public static String adminRemovedTravelPackade(Long id) {
-        return String.format("admin removed travel packade with ID [%s]. Travel package is now set to inactive", id);
+        return String.format("admin removed travel packade with ID [%s]. Travel package is now set to inactive.", id);
     }
 
     public static String adminUpdatedTravelPackade(Long id, TravelPackage oldValue, UpdateTravelPackageDTO newValue) {
+        System.out.println("adminUpdatedTravelPackade() called");
         List<String> changes = new ArrayList<>();
         if (!Objects.equals(oldValue.getDestination(), newValue.getDestination())) {
             changes.add(String.format("destination: %s -> %s", oldValue.getDestination(), newValue.getDestination()));
