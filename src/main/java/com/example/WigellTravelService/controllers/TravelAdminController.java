@@ -9,6 +9,7 @@ import com.example.WigellTravelService.dtos.mappers.TravelBookingMapper;
 import com.example.WigellTravelService.dtos.mappers.TravelPackageMapper;
 import com.example.WigellTravelService.services.TravelBookingService;
 import com.example.WigellTravelService.services.TravelPackageService;
+import com.example.WigellTravelService.utils.CurrencyConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +24,13 @@ public class TravelAdminController {
 
     private final TravelBookingService travelBookingService;
     private final TravelPackageService travelPackageService;
+    private final CurrencyConverter currencyConverter;
 
     @Autowired
-    public TravelAdminController(TravelBookingService travelBookingService, TravelPackageService travelPackageService) {
+    public TravelAdminController(TravelBookingService travelBookingService, TravelPackageService travelPackageService, CurrencyConverter currencyConverter) {
         this.travelBookingService = travelBookingService;
         this.travelPackageService = travelPackageService;
+        this.currencyConverter = currencyConverter;
     }
 
     @GetMapping("/listcanceled")
@@ -35,7 +38,10 @@ public class TravelAdminController {
         List<TravelBookingDTO> dtoList = travelBookingService
                 .listCanceledBookings()
                 .stream()
-                .map(TravelBookingMapper::toDTO)
+                .map(booking -> TravelBookingMapper.toDTO(
+                        booking,
+                        currencyConverter.convertSekToEur(booking.getTotalPrice())
+                ))
                 .toList();
         return ResponseEntity.ok(dtoList);
     }
@@ -45,7 +51,10 @@ public class TravelAdminController {
         List<TravelBookingDTO> dtoList = travelBookingService
                 .listUpcomingBookings()
                 .stream()
-                .map(TravelBookingMapper::toDTO)
+                .map(booking -> TravelBookingMapper.toDTO(
+                        booking,
+                        currencyConverter.convertSekToEur(booking.getTotalPrice())
+                ))
                 .toList();
         return ResponseEntity.ok(dtoList);
     }
@@ -55,7 +64,10 @@ public class TravelAdminController {
         List<TravelBookingDTO> dtoList = travelBookingService
                 .listPastBookings()
                 .stream()
-                .map(TravelBookingMapper::toDTO)
+                .map(booking -> TravelBookingMapper.toDTO(
+                        booking,
+                        currencyConverter.convertSekToEur(booking.getTotalPrice())
+                ))
                 .toList();
         return ResponseEntity.ok(dtoList);
     }
