@@ -4,6 +4,12 @@ public class CancelBookingDTO {
 
     private Long bookingId;
 
+    public CancelBookingDTO() {}
+
+    public CancelBookingDTO(Long bookingId) {
+        this.bookingId = bookingId;
+    }
+
     public Long getBookingId() {
         return bookingId;
     }

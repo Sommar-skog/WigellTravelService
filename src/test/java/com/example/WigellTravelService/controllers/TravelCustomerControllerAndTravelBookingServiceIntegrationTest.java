@@ -1,5 +1,6 @@
 package com.example.WigellTravelService.controllers;
 
+import com.example.WigellTravelService.dtos.CancelBookingDTO;
 import com.example.WigellTravelService.dtos.CreateBookingDTO;
 import com.example.WigellTravelService.entities.TravelBooking;
 import com.example.WigellTravelService.entities.TravelCustomer;
@@ -8,6 +9,7 @@ import com.example.WigellTravelService.repositories.TravelBookingRepository;
 import com.example.WigellTravelService.repositories.TravelCustomerRepository;
 import com.example.WigellTravelService.services.TravelBookingService;
 import com.example.WigellTravelService.services.TravelCustomerService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -67,7 +69,7 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        travelCustomer = new TravelCustomer(-1L, "a", "a", "a");
+        travelCustomer = new TravelCustomer(-10L, "a", "a", "a");
         travelBooking = new TravelBooking(
                 -1L,
                 LocalDate.of(2025, 9, 23),
@@ -212,7 +214,52 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
     }
 
     @Test
-    void cancelTrip() {
+    @WithMockUser(username = "a", roles = "USER")
+    void cancelTripShouldCancelTrip() throws Exception {
+        CancelBookingDTO cancelBookingDTO = new CancelBookingDTO(-1L);
+        TravelBooking booking = new TravelBooking(
+                -1L,
+                LocalDate.now().plusDays(1),
+                LocalDate.now().plusDays(8),
+                1,
+                new BigDecimal("7000.00"),
+                false,
+                travelCustomer,
+                new TravelPackage(-10L, "HotelTest", "Paris, France", new BigDecimal("7000.00"), true)
+        );
+
+        when(mockTravelBookingRepository.findById(-1L)).thenReturn(Optional.of(booking));
+        when(mockTravelBookingRepository.save(any(TravelBooking.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+
+        mockMvc.perform(put("/canceltrip")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(cancelBookingDTO)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.bookedBy").value("a"))
+                .andExpect(jsonPath("$.bookingId").value(-1))
+                .andExpect(jsonPath("$.hotelName").value("HotelTest"))
+                .andExpect(jsonPath("$.destination").value("Paris, France"))
+                .andExpect(jsonPath("$.startDate").value(LocalDate.now().plusDays(1).toString()))
+                .andExpect(jsonPath("$.weeks").value(1))
+                .andExpect(jsonPath("$.totalPriceInSek").value(7000.00))
+                .andExpect(jsonPath("$.cancelled").value(true));
+
+        ArgumentCaptor<CancelBookingDTO> dtoCaptor = ArgumentCaptor.forClass(CancelBookingDTO.class);
+        ArgumentCaptor<Principal> principalCaptor = ArgumentCaptor.forClass(Principal.class);
+
+        verify(travelBookingService).cancelTrip(dtoCaptor.capture(), principalCaptor.capture());
+
+        CancelBookingDTO capturedDto = dtoCaptor.getValue();
+        Principal capturedPrincipal = principalCaptor.getValue();
+
+        assertEquals(-1L, capturedDto.getBookingId());
+        assertEquals("a", capturedPrincipal.getName());
+
+        verify(mockTravelBookingRepository,times(1)).findById(-1L);
+        verify(mockTravelBookingRepository, times(1)).save(any(TravelBooking.class));
     }
 
     @Test
