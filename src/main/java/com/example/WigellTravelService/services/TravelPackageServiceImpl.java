@@ -94,6 +94,9 @@ public class TravelPackageServiceImpl implements TravelPackageService {
     }
 
     public TravelPackage getTravelPackageById(Long travelPackageId) {
+        if (travelPackageId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "travelPackageId is required");
+        }
         return travelPackageRepository.findById(travelPackageId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "TravelPackage with id " + travelPackageId + " not found"));
     }
 

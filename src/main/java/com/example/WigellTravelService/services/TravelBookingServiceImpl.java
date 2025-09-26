@@ -59,14 +59,10 @@ public class TravelBookingServiceImpl implements TravelBookingService {
     public TravelBooking cancelTrip(CancelBookingDTO cancelBookingDTO, Principal principal) {
         boolean wasCancelled = false;
          TravelBooking trip = validateCancelTrip(cancelBookingDTO, principal);
-         if (isTripUpcoming(trip.getStartDate())) {
-                trip.setCancelled(true);
-                wasCancelled = true;
-         }
 
-         if(wasCancelled) {
-             USER_LOGGER.info(LogMessageBuilder.userCanceledTrip(trip.getTravelPackage().getDestination(),trip.getNumberOfWeeks()));
-         }
+         trip.setCancelled(true);
+
+         USER_LOGGER.info(LogMessageBuilder.userCanceledTrip(trip.getTravelPackage().getDestination(),trip.getNumberOfWeeks()));
 
         return travelBookingRepository.save(trip);
     }
@@ -112,10 +108,18 @@ public class TravelBookingServiceImpl implements TravelBookingService {
     }
 
     private TravelBooking validateCancelTrip(CancelBookingDTO cancelBookingDTO, Principal principal) {
+        if (cancelBookingDTO.getBookingId() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Booking id is required");
+        }
+
         TravelBooking booking = travelBookingRepository.findById(cancelBookingDTO.getBookingId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found"));
 
         if (!booking.getTravelCustomer().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not the owner of the booking");
+        }
+
+        if (!isTripUpcoming(booking.getStartDate())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Trip already started or finished");
         }
 
         return booking;

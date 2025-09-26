@@ -12,7 +12,7 @@
 
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="${consoleLayout}" disableAnsi="false" noConsoleAnsi="false"/>
+            <PatternLayout pattern="${consoleLayout}" disableAnsi="false"/>
         </Console>
 
         <File name="LogFile" filename="logs/user.analyze.log">
