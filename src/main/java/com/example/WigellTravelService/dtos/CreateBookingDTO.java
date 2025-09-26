@@ -38,7 +38,7 @@ public class CreateBookingDTO {
         return numberOfWeeks;
     }
 
-    public void setNumberOfWeeks(int numberOfWeeks) {
+    public void setNumberOfWeeks(Integer numberOfWeeks) {
         this.numberOfWeeks = numberOfWeeks;
     }
 
