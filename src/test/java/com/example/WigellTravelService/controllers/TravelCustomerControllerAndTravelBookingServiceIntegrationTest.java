@@ -11,6 +11,7 @@ import com.example.WigellTravelService.services.TravelCustomerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +23,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,10 +31,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -48,27 +50,23 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
     private ObjectMapper objectMapper;
 
     @MockitoBean
-    // @MockitoSpyBean
-    private TravelBookingRepository travelBookingRepository;
+    private TravelBookingRepository mockTravelBookingRepository;
 
     @MockitoBean
-    //@MockitoSpyBean
-    private TravelCustomerRepository travelCustomerRepository;
+    private TravelCustomerRepository mockTravelCustomerRepository;
 
-    @Autowired
+    @MockitoSpyBean
     private TravelCustomerService travelCustomerService;
-    @Autowired
+
+    @MockitoSpyBean
     private TravelBookingService travelBookingService;
 
-/*    @Autowired
-    TravelCustomerControllerAndTravelBookingServiceIntegrationTest(TravelCustomerService travelCustomerService, TravelBookingService travelBookingService) {
-        this.travelCustomerService = travelCustomerService;
-        this.travelBookingService = travelBookingService;
-    }*/
+
+
 
     @Test
     @WithMockUser(username = "a", roles = "USER")
-    void bookTrip() throws Exception {
+    void bookTripShouldBookTrip() throws Exception {
         TravelCustomer travelCustomer = new TravelCustomer(-1L, "a", "a", "a");
         TravelBooking travelBooking = new TravelBooking(
                 -1L,
@@ -79,8 +77,9 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
                 false,
                 travelCustomer,
                 new TravelPackage(-10L, "HotelTest", "Paris, France", new BigDecimal("7000.00"),true));
-        when(travelBookingRepository.save(any(TravelBooking.class))).thenReturn(travelBooking);
-        when(travelCustomerRepository.findByUsername(any(String.class))).thenReturn(Optional.of(travelCustomer));
+
+        when(mockTravelBookingRepository.save(any(TravelBooking.class))).thenReturn(travelBooking);
+        when(mockTravelCustomerRepository.findByUsername(any(String.class))).thenReturn(Optional.of(travelCustomer));
 
         CreateBookingDTO createBookingDTO = new CreateBookingDTO(1L, LocalDate.of(2025, 9, 23), 1);
 
@@ -97,8 +96,49 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
                 .andExpect(jsonPath("$.weeks").value(1))
                 .andExpect(jsonPath("$.totalPriceInSek").value(7000.00))
                 .andExpect(jsonPath("$.cancelled").value(false));
-        verify(travelBookingRepository, times(1)).save(any(TravelBooking.class));
-        verify(travelCustomerRepository, times(1)).findByUsername("a");
+
+        ArgumentCaptor<CreateBookingDTO> dtoCaptor = ArgumentCaptor.forClass(CreateBookingDTO.class);
+        ArgumentCaptor<Principal> principalCaptor = ArgumentCaptor.forClass(Principal.class);
+
+        verify(travelBookingService).bookTrip(dtoCaptor.capture(), principalCaptor.capture());
+
+        CreateBookingDTO capturedDto = dtoCaptor.getValue();
+        Principal capturedPrincipal = principalCaptor.getValue();
+
+        assertEquals(1L, capturedDto.getTravelPackageId());
+        assertEquals(1, capturedDto.getNumberOfWeeks());
+        assertEquals(LocalDate.of(2025, 9, 23), capturedDto.getStartDate());
+        assertEquals("a", capturedPrincipal.getName());
+
+        verify(travelCustomerService, times(1))
+                .findTravelCustomerByUsername("a");
+
+        verify(mockTravelBookingRepository, times(1)).save(any(TravelBooking.class));
+        verify(mockTravelCustomerRepository, times(1)).findByUsername("a");
+    }
+
+    @Test
+    @WithMockUser(username = "a", roles = "USER")
+    void bookTripWithTravelPackageIdNullShouldThrowException() throws Exception {
+
+    }
+
+    @Test
+    @WithMockUser(username = "a", roles = "USER")
+    void bookTripWithStartDateNullShouldThrowException() throws Exception {
+
+    }
+
+    @Test
+    @WithMockUser(username = "a", roles = "USER")
+    void bookTripWithNumberOfWeeksNullShouldThrowException() throws Exception {
+
+    }
+
+    @Test
+    @WithMockUser(username = "a", roles = "USER")
+    void bookTripWithWrongCustomerShouldThrowException() throws Exception {
+
     }
 
     @Test
