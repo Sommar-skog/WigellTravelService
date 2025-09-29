@@ -17,11 +17,11 @@ public class TravelCustomerServiceImpl implements TravelCustomerService {
         this.travelCustomerRepository = travelCustomerRepository;
     }
 
-    @Override
+/*    @Override
     public TravelCustomer findTravelCustomerById(Long customerId) {
         return travelCustomerRepository.findById(customerId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer with ID " + customerId + " was not found"));
-    }
+    }*/
 
     @Override
     public TravelCustomer findTravelCustomerByUsername(String username) {
