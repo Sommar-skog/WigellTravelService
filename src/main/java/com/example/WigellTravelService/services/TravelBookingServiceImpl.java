@@ -35,7 +35,6 @@ public class TravelBookingServiceImpl implements TravelBookingService {
         this.travelCustomerService = travelCustomerService;
     }
 
-    //TODO Få in totalpriset i Euro också!
     @Override
     public TravelBooking bookTrip(CreateBookingDTO createBookingDTO, Principal principal) {
         validateCreateBooking(createBookingDTO);

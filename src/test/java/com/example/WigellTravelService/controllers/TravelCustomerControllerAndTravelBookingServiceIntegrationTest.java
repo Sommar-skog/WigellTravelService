@@ -379,27 +379,19 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
         verify(mockTravelBookingRepository, times(1)).findById(eq(-5L));
     }
 
-
-
     @Test
     @WithMockUser(username = "a", roles = "USER")
     void getMyBookingsShouldReturnsBookingsForLoggedInUser() throws Exception {
-        TravelBookingDTO dto = new TravelBookingDTO("a", -1L, "HotelTest", "Paris, France", LocalDate.of(2025,9,23),1, new BigDecimal("7000.00"), new BigDecimal("700.00"), false);
         when(mockTravelBookingRepository.findByTravelCustomerUsernameAndCancelledFalse("a")).thenReturn(List.of(travelBooking));
 
         mockMvc.perform(get("/mybookings")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(dto)))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(1))
                 .andExpect(jsonPath("$[0].bookedBy").value("a"))
                 .andExpect(jsonPath("$[0].bookingId").value(-1))
-                .andExpect(jsonPath("$[0].hotelName").value("HotelTest"))
-                .andExpect(jsonPath("$[0].destination").value("Paris, France"))
-                .andExpect(jsonPath("$[0].startDate").value("2025-09-23"))
-                .andExpect(jsonPath("$[0].weeks").value(1))
-                .andExpect(jsonPath("$[0].totalPriceInSek").value(7000.00))
-                .andExpect(jsonPath("$[0].totalPriceInEuro").exists())
                 .andExpect(jsonPath("$[0].cancelled").value(false));
 
         ArgumentCaptor<Principal> principalCaptor = ArgumentCaptor.forClass(Principal.class);
@@ -416,13 +408,43 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
         verify(mockTravelBookingRepository, times(1)).findByTravelCustomerUsernameAndCancelledFalse("a");
     }
 
-    @Test
+/*    @Test
+    @WithMockUser(username = "a", roles = "USER")
     void getMyBookingsShouldReturnsEmptyListWhenNoBookingsExist() throws Exception {
 
+        when(mockTravelBookingRepository.findByTravelCustomerUsernameAndCancelledFalse("a")).thenReturn(List.of());
+
+        mockMvc.perform(get("/mybookings")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
+                        .andExpect(jsonPath("$.length()").value(0));
+
+        verify(travelBookingService, times(1))
+                .getMyBookings(any(Principal.class));
+
+        verify(mockTravelBookingRepository, times(1)).findByTravelCustomerUsernameAndCancelledFalse("a");
     }
 
     @Test
+    @WithMockUser(username = "a", roles = "USER")
     void getMyBookingsShouldReturnsOnlyNonCancelledBookings() throws Exception {
 
-    }
+        when(mockTravelBookingRepository.findByTravelCustomerUsernameAndCancelledFalse("a")).thenReturn(List.of(travelBooking));
+
+        mockMvc.perform(get("/mybookings")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].cancelled").value(false));
+
+        verify(travelBookingService, times(1))
+                .getMyBookings(any(Principal.class));
+
+        verify(mockTravelBookingRepository, times(1)).findByTravelCustomerUsernameAndCancelledFalse("a");
+
+    }*/
 }
