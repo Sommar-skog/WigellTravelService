@@ -2,6 +2,7 @@ package com.example.WigellTravelService.controllers;
 
 import com.example.WigellTravelService.dtos.CancelBookingDTO;
 import com.example.WigellTravelService.dtos.CreateBookingDTO;
+import com.example.WigellTravelService.dtos.TravelBookingDTO;
 import com.example.WigellTravelService.entities.TravelBooking;
 import com.example.WigellTravelService.entities.TravelCustomer;
 import com.example.WigellTravelService.entities.TravelPackage;
@@ -35,6 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -380,6 +382,47 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
 
 
     @Test
-    void getMyBookings() {
+    @WithMockUser(username = "a", roles = "USER")
+    void getMyBookingsShouldReturnsBookingsForLoggedInUser() throws Exception {
+        TravelBookingDTO dto = new TravelBookingDTO("a", -1L, "HotelTest", "Paris, France", LocalDate.of(2025,9,23),1, new BigDecimal("7000.00"), new BigDecimal("700.00"), false);
+        when(mockTravelBookingRepository.findByTravelCustomerUsernameAndCancelledFalse("a")).thenReturn(List.of(travelBooking));
+
+        mockMvc.perform(get("/mybookings")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].bookedBy").value("a"))
+                .andExpect(jsonPath("$[0].bookingId").value(-1))
+                .andExpect(jsonPath("$[0].hotelName").value("HotelTest"))
+                .andExpect(jsonPath("$[0].destination").value("Paris, France"))
+                .andExpect(jsonPath("$[0].startDate").value("2025-09-23"))
+                .andExpect(jsonPath("$[0].weeks").value(1))
+                .andExpect(jsonPath("$[0].totalPriceInSek").value(7000.00))
+                .andExpect(jsonPath("$[0].totalPriceInEuro").exists())
+                .andExpect(jsonPath("$[0].cancelled").value(false));
+
+        ArgumentCaptor<Principal> principalCaptor = ArgumentCaptor.forClass(Principal.class);
+
+        verify(travelBookingService).getMyBookings(principalCaptor.capture());
+
+        Principal capturedPrincipal = principalCaptor.getValue();
+
+        assertEquals("a", capturedPrincipal.getName());
+
+        verify(travelBookingService, times(1))
+                .getMyBookings(any(Principal.class));
+
+        verify(mockTravelBookingRepository, times(1)).findByTravelCustomerUsernameAndCancelledFalse("a");
+    }
+
+    @Test
+    void getMyBookingsShouldReturnsEmptyListWhenNoBookingsExist() throws Exception {
+
+    }
+
+    @Test
+    void getMyBookingsShouldReturnsOnlyNonCancelledBookings() throws Exception {
+
     }
 }
