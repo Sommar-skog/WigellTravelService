@@ -75,8 +75,8 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
         travelPackage = new TravelPackage(-10L, "HotelTest", "Paris, France", new BigDecimal("7000.00"), true);
         travelBooking = new TravelBooking(
                 -1L,
-                LocalDate.of(2025, 9, 23),
-                LocalDate.of(2025, 9, 29),
+                LocalDate.of(2100, 1, 1),
+                LocalDate.of(2100, 1, 7),
                 1,
                 new BigDecimal("7000.00"),
                 false,
@@ -92,7 +92,7 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
     @Test
     @WithMockUser(username = "a", roles = "USER")
     void bookTripShouldBookTrip() throws Exception {
-        CreateBookingDTO createBookingDTO = new CreateBookingDTO(1L, LocalDate.of(2025, 9, 23), 1);
+        CreateBookingDTO createBookingDTO = new CreateBookingDTO(1L, LocalDate.of(2100, 1, 1), 1);
 
         mockMvc.perform(post("/booktrip")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -103,7 +103,8 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
                 .andExpect(jsonPath("$.bookingId").value(-1))
                 .andExpect(jsonPath("$.hotelName").value("HotelTest"))
                 .andExpect(jsonPath("$.destination").value("Paris, France"))
-                .andExpect(jsonPath("$.startDate").value("2025-09-23"))
+                .andExpect(jsonPath("$.startDate").value("20100-01-01"))
+                .andExpect(jsonPath("$.endDate").value("20100-01-07"))
                 .andExpect(jsonPath("$.weeks").value(1))
                 .andExpect(jsonPath("$.totalPriceInSek").value(7000.00))
                 .andExpect(jsonPath("$.totalPriceInEuro").exists())
@@ -119,7 +120,7 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
 
         assertEquals(1L, capturedDto.getTravelPackageId());
         assertEquals(1, capturedDto.getNumberOfWeeks());
-        assertEquals(LocalDate.of(2025, 9, 23), capturedDto.getStartDate());
+        assertEquals(LocalDate.of(2100,1,1), capturedDto.getStartDate());
         assertEquals("a", capturedPrincipal.getName());
 
         verify(travelCustomerService, times(1))
@@ -132,7 +133,7 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
     @Test
     @WithMockUser(username = "a", roles = "USER")
     void bookTripWithTravelPackageIdNullShouldThrowException() throws Exception {
-        CreateBookingDTO createBookingDTO = new CreateBookingDTO(null, LocalDate.of(2025, 9, 23), 1);
+        CreateBookingDTO createBookingDTO = new CreateBookingDTO(null, LocalDate.of(2011, 1, 1), 1);
 
         mockMvc.perform(post("/booktrip")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -168,7 +169,7 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
     @Test
     @WithMockUser(username = "a", roles = "USER")
     void bookTripWithNumberOfWeeksNullShouldThrowException() throws Exception {
-        CreateBookingDTO createBookingDTO = new CreateBookingDTO(1L, LocalDate.of(2025, 9, 23), null);
+        CreateBookingDTO createBookingDTO = new CreateBookingDTO(1L, LocalDate.of(2100, 1, 1), null);
 
         mockMvc.perform(post("/booktrip")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -187,7 +188,7 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
     @Test
     @WithMockUser(username = "a", roles = "USER")
     void bookTripWithWrongCustomerShouldThrowException() throws Exception {
-        CreateBookingDTO createBookingDTO = new CreateBookingDTO(1L, LocalDate.of(2025, 9, 23), 1);
+        CreateBookingDTO createBookingDTO = new CreateBookingDTO(1L, LocalDate.of(2100, 1, 1), 1);
 
         when(mockTravelCustomerRepository.findByUsername("a")).thenReturn(Optional.empty());
 
@@ -221,18 +222,8 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
     @WithMockUser(username = "a", roles = "USER")
     void cancelTripShouldCancelTrip() throws Exception {
         CancelBookingDTO cancelBookingDTO = new CancelBookingDTO(-1L);
-        TravelBooking booking = new TravelBooking(
-                -1L,
-                LocalDate.now().plusDays(1),
-                LocalDate.now().plusDays(8),
-                1,
-                new BigDecimal("7000.00"),
-                false,
-                travelCustomer,
-                new TravelPackage(-10L, "HotelTest", "Paris, France", new BigDecimal("7000.00"), true)
-        );
 
-        when(mockTravelBookingRepository.findById(-1L)).thenReturn(Optional.of(booking));
+        when(mockTravelBookingRepository.findById(-1L)).thenReturn(Optional.of(travelBooking));
         when(mockTravelBookingRepository.save(any(TravelBooking.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -246,7 +237,7 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
                 .andExpect(jsonPath("$.bookingId").value(-1))
                 .andExpect(jsonPath("$.hotelName").value("HotelTest"))
                 .andExpect(jsonPath("$.destination").value("Paris, France"))
-                .andExpect(jsonPath("$.startDate").value(LocalDate.now().plusDays(1).toString()))
+                .andExpect(jsonPath("$.startDate").value("2100-01-01"))
                 .andExpect(jsonPath("$.weeks").value(1))
                 .andExpect(jsonPath("$.totalPriceInSek").value(7000.00))
                 .andExpect(jsonPath("$.totalPriceInEuro").exists())
@@ -408,7 +399,7 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
         verify(mockTravelBookingRepository, times(1)).findByTravelCustomerUsernameAndCancelledFalse("a");
     }
 
-/*    @Test
+    @Test
     @WithMockUser(username = "a", roles = "USER")
     void getMyBookingsShouldReturnsEmptyListWhenNoBookingsExist() throws Exception {
 
@@ -426,25 +417,4 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
 
         verify(mockTravelBookingRepository, times(1)).findByTravelCustomerUsernameAndCancelledFalse("a");
     }
-
-    @Test
-    @WithMockUser(username = "a", roles = "USER")
-    void getMyBookingsShouldReturnsOnlyNonCancelledBookings() throws Exception {
-
-        when(mockTravelBookingRepository.findByTravelCustomerUsernameAndCancelledFalse("a")).thenReturn(List.of(travelBooking));
-
-        mockMvc.perform(get("/mybookings")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].cancelled").value(false));
-
-        verify(travelBookingService, times(1))
-                .getMyBookings(any(Principal.class));
-
-        verify(mockTravelBookingRepository, times(1)).findByTravelCustomerUsernameAndCancelledFalse("a");
-
-    }*/
 }

@@ -436,7 +436,7 @@ class TravelPackageServiceImpUnitTest {
 
     @Test
     void removeTravelPackageShouldCancelAllBookings(){
-        TravelBooking booking = new TravelBooking(-20L, LocalDate.of(2025,9,24), LocalDate.of(2025,9,30), 1, new BigDecimal("7000.00"), false,
+        TravelBooking booking = new TravelBooking(-20L, LocalDate.of(2100,1,1), LocalDate.of(2100,1,7), 1, new BigDecimal("7000.00"), false,
                 new TravelCustomer(), new TravelPackage());
         testTravelPackage.setBookingList(List.of(booking));
         when(mockTravelPackageRepository.findById(testTravelPackage.getTravelPackageId())).thenReturn(Optional.of(testTravelPackage));
