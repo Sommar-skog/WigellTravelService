@@ -406,6 +406,20 @@ class TravelPackageServiceImpUnitTest {
         verify(mockTravelPackageRepository, never()).save(any());
     }
 
+    @Test
+    void updateTravelPackageShouldThrowExceptionWhenUpdateTravelPackageIdIsNull() {
+        UpdateTravelPackageDTO dto = new UpdateTravelPackageDTO(null, "hotelUpdate", "updatedDestination", new BigDecimal("1000.00"));
+
+        ResponseStatusException responseStatusException = assertThrows(ResponseStatusException.class, () -> {
+            travelPackageService.updateTravelPackage(dto);
+        });
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseStatusException.getStatusCode());
+        assertEquals("travelPackageId is required", responseStatusException.getReason());
+        verify(mockTravelPackageRepository, never()).findById(any());
+        verify(mockTravelPackageRepository, never()).save(any());
+    }
+
 
     @Test
     void removeTravelPackageShouldSetActiveToFalse() {
