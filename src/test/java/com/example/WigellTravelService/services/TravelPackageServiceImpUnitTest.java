@@ -47,31 +47,53 @@ class TravelPackageServiceImpUnitTest {
         testTravelPackage = new TravelPackage(-1L,"TestHotel", "TestDestination", new BigDecimal("10000.00"), true);
     }
 
-/*    @Test
-    void getAllTravelPackagesShouldReturnListOfAllTravelPackages() {
+    @Test
+    void getAllTravelPackagesAsUserShouldReturnActivePackages() {
         when(mockTravelPackageRepository.findAllByActiveTrue()).thenReturn(List.of(testTravelPackage));
 
-        List<TravelPackage> travelPackages = travelPackageService.getAllTravelPackages();
+        List<TravelPackage> travelPackages = travelPackageService.getAllTravelPackages("ROLE_USER");
         List<TravelPackage> expectedTravelPackages = List.of(testTravelPackage);
 
         assertNotNull(travelPackages);
         assertEquals(expectedTravelPackages, travelPackages);
         assertEquals(travelPackages.size(), expectedTravelPackages.size());
         verify(mockTravelPackageRepository).findAllByActiveTrue();
-    }*/
+    }
 
-/*
     @Test
-    void getAllTravelPackagesShouldReturnEmptyListOfTravelPackagesWhenNoPackagesExist() {
+    void getAllTravelPackagesAsAdminShouldReturnAllPackages() {
+        when(mockTravelPackageRepository.findAll()).thenReturn(List.of(testTravelPackage));
+
+        List<TravelPackage> travelPackages = travelPackageService.getAllTravelPackages("ROLE_ADMIN");
+        List<TravelPackage> expectedTravelPackages = List.of(testTravelPackage);
+
+        assertNotNull(travelPackages);
+        assertEquals(expectedTravelPackages, travelPackages);
+        assertEquals(travelPackages.size(), expectedTravelPackages.size());
+        verify(mockTravelPackageRepository).findAll();
+    }
+
+    @Test
+    void getAllTravelPackagesAsAdminShouldReturnEmptyListWhenNoPackagesExist() {
+        when(mockTravelPackageRepository.findAll()).thenReturn(List.of());
+
+        List<TravelPackage> travelPackages = travelPackageService.getAllTravelPackages("ROLE_ADMIN");
+
+        assertNotNull(travelPackages);
+        assertTrue(travelPackages.isEmpty());
+        verify(mockTravelPackageRepository).findAll();
+    }
+
+    @Test
+    void getAllTravelPackagesAsUserShouldReturnEmptyListWhenNoActivePackagesExist(){
         when(mockTravelPackageRepository.findAllByActiveTrue()).thenReturn(List.of());
 
-        List<TravelPackage> travelPackages = travelPackageService.getAllTravelPackages();
+        List<TravelPackage> travelPackages = travelPackageService.getAllTravelPackages("ROLE_USER");
 
         assertNotNull(travelPackages);
         assertTrue(travelPackages.isEmpty());
         verify(mockTravelPackageRepository).findAllByActiveTrue();
     }
-*/
 
     @Test
     void addTravelPackageShouldAddNewTravelPackage() {

@@ -11,7 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
@@ -30,9 +29,8 @@ public class TravelCommonController {
     @GetMapping("/travels")
     public ResponseEntity<List<TravelPackageDTO>> getAllTravelPackages(Authentication authentication) {
         String role = authentication.getAuthorities().stream()
-                .map(a -> a.getAuthority())
-                .findFirst()
-                .orElse("ROLE_USER");
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))
+                ? "ROLE_ADMIN" : "ROLE_USER";
 
         List<TravelPackageDTO> dtoList = travelPackageService
                 .getAllTravelPackages(role)
