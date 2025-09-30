@@ -35,7 +35,7 @@ public class LogMessageBuilder {
             changes.add(String.format("hotelName: %s -> %s", oldValue.getHotelName(), newValue.getHotelName()));
         }
 
-        if (!Objects.equals(oldValue.getWeekPrice(), newValue.getWeekPrice())) {
+        if (oldValue.getWeekPrice().compareTo(newValue.getWeekPrice()) != 0) {
             changes.add(String.format("weekPrice: %s -> %s", oldValue.getWeekPrice(), newValue.getWeekPrice()));
         }
 

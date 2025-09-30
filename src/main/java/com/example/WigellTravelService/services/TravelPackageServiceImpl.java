@@ -55,11 +55,13 @@ public class TravelPackageServiceImpl implements TravelPackageService {
     public TravelPackage updateTravelPackage(UpdateTravelPackageDTO updateTravelPackageDTO) {
         TravelPackage travelPackageToUpdate = getTravelPackageById(updateTravelPackageDTO.getTravelPackageId());
 
-        TravelPackage original = new TravelPackage();
-        original.setDestination(travelPackageToUpdate.getDestination());
-        original.setHotelName(travelPackageToUpdate.getHotelName());
-        original.setWeekPrice(travelPackageToUpdate.getWeekPrice());
-
+        TravelPackage original = new TravelPackage(
+                travelPackageToUpdate.getTravelPackageId(),
+                travelPackageToUpdate.getHotelName(),
+                travelPackageToUpdate.getDestination(),
+                travelPackageToUpdate.getWeekPrice(),
+                travelPackageToUpdate.isActive()
+        );
 
         validateUpdateTravelPackage(updateTravelPackageDTO);
 
