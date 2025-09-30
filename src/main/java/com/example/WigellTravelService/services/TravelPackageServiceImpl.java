@@ -29,7 +29,10 @@ public class TravelPackageServiceImpl implements TravelPackageService {
     }
 
     @Override
-    public List<TravelPackage> getAllTravelPackages() {
+    public List<TravelPackage> getAllTravelPackages(String role) {
+        if (role.equals("ROLE_ADMIN")) {
+            return travelPackageRepository.findAll();
+        }
         return travelPackageRepository.findAllByActiveTrue();
     }
 

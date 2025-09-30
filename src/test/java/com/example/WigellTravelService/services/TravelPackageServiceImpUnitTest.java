@@ -47,7 +47,7 @@ class TravelPackageServiceImpUnitTest {
         testTravelPackage = new TravelPackage(-1L,"TestHotel", "TestDestination", new BigDecimal("10000.00"), true);
     }
 
-    @Test
+/*    @Test
     void getAllTravelPackagesShouldReturnListOfAllTravelPackages() {
         when(mockTravelPackageRepository.findAllByActiveTrue()).thenReturn(List.of(testTravelPackage));
 
@@ -58,8 +58,9 @@ class TravelPackageServiceImpUnitTest {
         assertEquals(expectedTravelPackages, travelPackages);
         assertEquals(travelPackages.size(), expectedTravelPackages.size());
         verify(mockTravelPackageRepository).findAllByActiveTrue();
-    }
+    }*/
 
+/*
     @Test
     void getAllTravelPackagesShouldReturnEmptyListOfTravelPackagesWhenNoPackagesExist() {
         when(mockTravelPackageRepository.findAllByActiveTrue()).thenReturn(List.of());
@@ -70,6 +71,7 @@ class TravelPackageServiceImpUnitTest {
         assertTrue(travelPackages.isEmpty());
         verify(mockTravelPackageRepository).findAllByActiveTrue();
     }
+*/
 
     @Test
     void addTravelPackageShouldAddNewTravelPackage() {

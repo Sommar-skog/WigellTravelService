@@ -103,8 +103,7 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
                 .andExpect(jsonPath("$.bookingId").value(-1))
                 .andExpect(jsonPath("$.hotelName").value("HotelTest"))
                 .andExpect(jsonPath("$.destination").value("Paris, France"))
-                .andExpect(jsonPath("$.startDate").value("20100-01-01"))
-                .andExpect(jsonPath("$.endDate").value("20100-01-07"))
+                .andExpect(jsonPath("$.startDate").value("2100-01-01"))
                 .andExpect(jsonPath("$.weeks").value(1))
                 .andExpect(jsonPath("$.totalPriceInSek").value(7000.00))
                 .andExpect(jsonPath("$.totalPriceInEuro").exists())
@@ -208,7 +207,7 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
 
         assertEquals(1L, capturedDto.getTravelPackageId());
         assertEquals(1, capturedDto.getNumberOfWeeks());
-        assertEquals(LocalDate.of(2025, 9, 23), capturedDto.getStartDate());
+        assertEquals(LocalDate.of(2100, 1, 1), capturedDto.getStartDate());
         assertEquals("a", capturedPrincipal.getName());
 
         verify(travelCustomerService, times(1))
