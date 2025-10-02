@@ -81,6 +81,22 @@ class TravelAdminControllerAndTravelBookingServiceIntegrationTest {
 
     @Test
     @WithMockUser(username = "b", roles = "ADMIN")
+    void listCanceledBookingsShouldReturnEmptyListWhenNoBookingsExist() throws Exception {
+        when(mockTravelBookingRepository.findByCancelledIsTrue()).thenReturn(List.of());
+
+        mockMvc.perform(get("/listcanceled")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(0));
+
+        verify(travelBookingService, times(1)).listCanceledBookings();
+        verify(mockTravelBookingRepository, times(1)).findByCancelledIsTrue();
+    }
+
+    @Test
+    @WithMockUser(username = "b", roles = "ADMIN")
     void listUpcomingBookingsShouldListUpcomingBookings() throws Exception {
         when(mockTravelBookingRepository.findByStartDateGreaterThanEqualAndCancelledFalse(LocalDate.now())).thenReturn(List.of(travelBooking));
 
@@ -95,7 +111,31 @@ class TravelAdminControllerAndTravelBookingServiceIntegrationTest {
                 .andExpect(jsonPath("$[0].cancelled").value(false));
 
         verify(travelBookingService, times(1)).listUpcomingBookings();
+        verify(mockTravelBookingRepository, times(1)).findByStartDateGreaterThanEqualAndCancelledFalse(LocalDate.now());
+    }
 
+    @Test
+    @WithMockUser(username = "a", roles = "USER")
+    void listCanceledBookingsShouldReturnForbiddenWhenUserRoleIsNotAdmin() throws Exception {
+
+        mockMvc.perform(get("/listupcoming")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = "b", roles = "ADMIN")
+    void listUpcomingBookingsShouldReturnEmptyListWhenNoBookingsExist() throws Exception {
+        when(mockTravelBookingRepository.findByStartDateGreaterThanEqualAndCancelledFalse(LocalDate.now())).thenReturn(List.of());
+
+        mockMvc.perform(get("/listupcoming")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(0));
+
+        verify(travelBookingService, times(1)).listUpcomingBookings();
         verify(mockTravelBookingRepository, times(1)).findByStartDateGreaterThanEqualAndCancelledFalse(LocalDate.now());
     }
 
@@ -118,6 +158,22 @@ class TravelAdminControllerAndTravelBookingServiceIntegrationTest {
 
         verify(travelBookingService, times(1)).listPastBookings();
 
+        verify(mockTravelBookingRepository, times(1)).findByEndDateBeforeAndCancelledIsFalse(LocalDate.now());
+    }
+
+    @Test
+    @WithMockUser(username = "b", roles = "ADMIN")
+    void listPastBookingsShouldReturnEmptyListWhenNoBookingsExist() throws Exception {
+        when(mockTravelBookingRepository.findByEndDateBeforeAndCancelledIsFalse(LocalDate.now())).thenReturn(List.of());
+
+        mockMvc.perform(get("/listpast")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(0));
+
+        verify(travelBookingService, times(1)).listPastBookings();
         verify(mockTravelBookingRepository, times(1)).findByEndDateBeforeAndCancelledIsFalse(LocalDate.now());
     }
 

@@ -97,6 +97,8 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
     void bookTripShouldBookTrip() throws Exception {
         CreateBookingDTO createBookingDTO = new CreateBookingDTO(1L, LocalDate.of(2100, 1, 1), 1);
 
+        when(mockTravelPackageRepository.findById(1L)).thenReturn(Optional.of(travelPackage));
+
         mockMvc.perform(post("/booktrip")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(createBookingDTO)))
@@ -193,6 +195,8 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
         CreateBookingDTO createBookingDTO = new CreateBookingDTO(1L, LocalDate.of(2100, 1, 1), 1);
 
         when(mockTravelCustomerRepository.findByUsername("a")).thenReturn(Optional.empty());
+        when(mockTravelPackageRepository.findById(1L)).thenReturn(Optional.of(travelPackage));
+
 
         mockMvc.perform(post("/booktrip")
                         .contentType(MediaType.APPLICATION_JSON)
