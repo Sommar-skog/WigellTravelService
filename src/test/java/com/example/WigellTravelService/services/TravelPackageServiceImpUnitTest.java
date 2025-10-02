@@ -470,7 +470,6 @@ class TravelPackageServiceImpUnitTest {
 
     }
 
-
     @Test
     void removeTravelPackageShouldSetActiveToFalse() {
         when(mockTravelPackageRepository.findById(testTravelPackage.getTravelPackageId())).thenReturn(Optional.of(testTravelPackage));
