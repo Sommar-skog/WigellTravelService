@@ -27,15 +27,18 @@ public class LogMessageBuilder {
     public static String adminUpdatedTravelPackade(Long id, TravelPackage oldValue, UpdateTravelPackageDTO newValue) {
         System.out.println("adminUpdatedTravelPackade() called");
         List<String> changes = new ArrayList<>();
-        if (!Objects.equals(oldValue.getDestination(), newValue.getDestination())) {
+        if (newValue.getDestination() != null &&
+                !Objects.equals(oldValue.getDestination(), newValue.getDestination())) {
             changes.add(String.format("destination: %s -> %s", oldValue.getDestination(), newValue.getDestination()));
         }
 
-        if (!Objects.equals(oldValue.getHotelName(), newValue.getHotelName())) {
+        if (newValue.getHotelName() != null &&
+                !Objects.equals(oldValue.getHotelName(), newValue.getHotelName())) {
             changes.add(String.format("hotelName: %s -> %s", oldValue.getHotelName(), newValue.getHotelName()));
         }
 
-        if (oldValue.getWeekPrice().compareTo(newValue.getWeekPrice()) != 0) {
+        if (oldValue.getWeekPrice() != null && newValue.getWeekPrice() != null &&
+                oldValue.getWeekPrice().compareTo(newValue.getWeekPrice()) != 0) {
             changes.add(String.format("weekPrice: %s -> %s", oldValue.getWeekPrice(), newValue.getWeekPrice()));
         }
 

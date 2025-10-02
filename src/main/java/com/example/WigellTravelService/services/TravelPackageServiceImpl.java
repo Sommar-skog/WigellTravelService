@@ -53,6 +53,8 @@ public class TravelPackageServiceImpl implements TravelPackageService {
 
     @Override
     public TravelPackage updateTravelPackage(UpdateTravelPackageDTO updateTravelPackageDTO) {
+        boolean changed = false;
+
         TravelPackage travelPackageToUpdate = getTravelPackageById(updateTravelPackageDTO.getTravelPackageId());
 
         TravelPackage original = new TravelPackage(
@@ -67,35 +69,48 @@ public class TravelPackageServiceImpl implements TravelPackageService {
 
         if (updateTravelPackageDTO.getHotelName() != null) {
             travelPackageToUpdate.setHotelName(updateTravelPackageDTO.getHotelName());
+            changed = true;
         }
 
         if (updateTravelPackageDTO.getDestination() != null) {
             travelPackageToUpdate.setDestination(updateTravelPackageDTO.getDestination());
+            changed = true;
         }
 
         if (updateTravelPackageDTO.getWeekPrice() != null) {
             travelPackageToUpdate.setWeekPrice(updateTravelPackageDTO.getWeekPrice());
+            changed = true;
         }
 
-        String logMessage = LogMessageBuilder.adminUpdatedTravelPackade(travelPackageToUpdate.getTravelPackageId(),original,updateTravelPackageDTO);
-        if (logMessage != null) {
-            USER_LOGGER.info(logMessage);
+        if (changed){
+            String logMessage = LogMessageBuilder.adminUpdatedTravelPackade(travelPackageToUpdate.getTravelPackageId(),original,updateTravelPackageDTO);
+            if (logMessage != null) {
+                USER_LOGGER.info(logMessage);
+            }
+            return travelPackageRepository.save(travelPackageToUpdate);
         }
 
-        return travelPackageRepository.save(travelPackageToUpdate);
+        return travelPackageToUpdate;
     }
 
     //Instead of deleting travel-packaged it's set to Active=False and bookings are cancelled. So that statistics
     //will not be affected
     @Override
     public TravelPackage removeTravelPackage(Long travelPackageId) {
+        boolean changed = false;
+
         TravelPackage travelPackageToRemove = getTravelPackageById(travelPackageId);
         cancelBookingsOnTravelPackage(travelPackageToRemove.getBookingList());
-        travelPackageToRemove.setActive(false);
+        if (travelPackageToRemove.isActive()) {
+            travelPackageToRemove.setActive(false);
+            changed = true;
+        }
 
-        USER_LOGGER.info(LogMessageBuilder.adminRemovedTravelPackade(travelPackageToRemove.getTravelPackageId()));
-
-        return travelPackageRepository.save(travelPackageToRemove);
+        if (changed) {
+            USER_LOGGER.info(LogMessageBuilder.adminRemovedTravelPackade(travelPackageToRemove.getTravelPackageId()));
+            return travelPackageRepository.save(travelPackageToRemove);
+        }
+        return travelPackageToRemove;
     }
 
     public TravelPackage getTravelPackageById(Long travelPackageId) {

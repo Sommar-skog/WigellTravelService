@@ -96,6 +96,19 @@ class TravelPackageServiceImpUnitTest {
     }
 
     @Test
+    void getAllTravelPackagesAsUserShouldReturnDefaultUserResultWhenRoleIsNotAdmin() {
+        when(mockTravelPackageRepository.findAllByActiveTrue()).thenReturn(List.of(testTravelPackage));
+
+        List<TravelPackage> travelPackages = travelPackageService.getAllTravelPackages("ROLE_X");
+        List<TravelPackage> expectedTravelPackages = List.of(testTravelPackage);
+
+        assertNotNull(travelPackages);
+        assertEquals(expectedTravelPackages, travelPackages);
+        assertEquals(travelPackages.size(), expectedTravelPackages.size());
+        verify(mockTravelPackageRepository).findAllByActiveTrue();
+    }
+
+    @Test
     void addTravelPackageShouldAddNewTravelPackage() {
         when(mockTravelPackageRepository.save(any(TravelPackage.class))).thenReturn(testTravelPackage);
 
@@ -444,6 +457,19 @@ class TravelPackageServiceImpUnitTest {
         verify(mockTravelPackageRepository, never()).save(any());
     }
 
+    @Test
+    void  updateTravelPackageShouldNotSaveWhenNoUpdatableFieldsProvided(){
+        UpdateTravelPackageDTO dto = new UpdateTravelPackageDTO(-1L, null, null, null);
+
+        when(mockTravelPackageRepository.findById(dto.getTravelPackageId())).thenReturn(Optional.of(testTravelPackage));
+
+        TravelPackage updatedTravelPackage = travelPackageService.updateTravelPackage(dto);
+
+        verify(mockTravelPackageRepository, times (1)).findById(-1L);
+        verify(mockTravelPackageRepository, never()).save(any());
+
+    }
+
 
     @Test
     void removeTravelPackageShouldSetActiveToFalse() {
@@ -500,6 +526,19 @@ class TravelPackageServiceImpUnitTest {
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         assertEquals("TravelPackage with id -2 not found", exception.getReason());
         verify(mockTravelPackageRepository).findById(nonExistingTravelPackageId);
+        verify(mockTravelPackageRepository, never()).save(any());
+    }
+
+    @Test
+    void removeTravelPackageShouldNotSaveWhenPackageIsInactive() {
+       testTravelPackage.setActive(false);
+
+        when(mockTravelPackageRepository.findById(testTravelPackage.getTravelPackageId())).thenReturn(Optional.of(testTravelPackage));
+
+        TravelPackage remove = travelPackageService.removeTravelPackage(testTravelPackage.getTravelPackageId());
+
+        assertFalse(remove.isActive());
+        verify(mockTravelPackageRepository, times (1)).findById(testTravelPackage.getTravelPackageId());
         verify(mockTravelPackageRepository, never()).save(any());
     }
 
