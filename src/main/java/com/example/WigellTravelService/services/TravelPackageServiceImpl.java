@@ -105,7 +105,6 @@ public class TravelPackageServiceImpl implements TravelPackageService {
             travelPackageToRemove.setActive(false);
             changed = true;
         }
-
         if (changed) {
             USER_LOGGER.info(LogMessageBuilder.adminRemovedTravelPackade(travelPackageToRemove.getTravelPackageId()));
             return travelPackageRepository.save(travelPackageToRemove);

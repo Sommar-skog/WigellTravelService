@@ -93,8 +93,14 @@ public class TravelBookingServiceImpl implements TravelBookingService {
         if (createBookingDTO.getStartDate() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start date is required");
         }
+        if (!isTripUpcoming(createBookingDTO.getStartDate())){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start date must be in the future");
+        }
         if (createBookingDTO.getNumberOfWeeks() == null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Number of weeks is required");
+        }
+        if (!travelPackageService.getTravelPackageById(createBookingDTO.getTravelPackageId()).isActive()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Travel package is inactive");
         }
     }
 

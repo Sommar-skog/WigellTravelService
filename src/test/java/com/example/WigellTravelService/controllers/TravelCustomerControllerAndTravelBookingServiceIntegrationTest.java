@@ -2,12 +2,12 @@ package com.example.WigellTravelService.controllers;
 
 import com.example.WigellTravelService.dtos.CancelBookingDTO;
 import com.example.WigellTravelService.dtos.CreateBookingDTO;
-import com.example.WigellTravelService.dtos.TravelBookingDTO;
 import com.example.WigellTravelService.entities.TravelBooking;
 import com.example.WigellTravelService.entities.TravelCustomer;
 import com.example.WigellTravelService.entities.TravelPackage;
 import com.example.WigellTravelService.repositories.TravelBookingRepository;
 import com.example.WigellTravelService.repositories.TravelCustomerRepository;
+import com.example.WigellTravelService.repositories.TravelPackageRepository;
 import com.example.WigellTravelService.services.TravelBookingService;
 import com.example.WigellTravelService.services.TravelCustomerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,6 +58,9 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
 
     @MockitoBean
     private TravelCustomerRepository mockTravelCustomerRepository;
+
+    @MockitoBean
+    private TravelPackageRepository mockTravelPackageRepository;
 
     @MockitoSpyBean
     private TravelCustomerService travelCustomerService;
@@ -216,6 +219,95 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
         verify(mockTravelBookingRepository, never()).save(any());
         verify(mockTravelCustomerRepository, times(1)).findByUsername("a");
     }
+
+    @Test
+    @WithMockUser(username="a", roles = "USER")
+    void bookTripShouldThrowExceptionWhenTravelPackageIsInactive() throws Exception {
+        CreateBookingDTO createBookingDTO = new CreateBookingDTO(-10L, LocalDate.of(2100, 1, 1), 1);
+        travelPackage.setActive(false);
+
+        when(mockTravelPackageRepository.findById(-10L)).thenReturn(Optional.of(travelPackage));
+
+        mockMvc.perform(post("/booktrip")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createBookingDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(status().reason("Travel package is inactive"));
+
+        ArgumentCaptor<CreateBookingDTO> dtoCaptor = ArgumentCaptor.forClass(CreateBookingDTO.class);
+        ArgumentCaptor<Principal> principalCaptor = ArgumentCaptor.forClass(Principal.class);
+
+        verify(travelBookingService).bookTrip(dtoCaptor.capture(), principalCaptor.capture());
+
+        CreateBookingDTO capturedDto = dtoCaptor.getValue();
+        Principal capturedPrincipal = principalCaptor.getValue();
+
+        assertEquals(-10L, capturedDto.getTravelPackageId());
+        assertEquals(1, capturedDto.getNumberOfWeeks());
+        assertEquals(LocalDate.of(2100, 1, 1), capturedDto.getStartDate());
+        assertEquals("a", capturedPrincipal.getName());
+
+        verify(mockTravelBookingRepository, never()).save(any());
+    }
+
+    @Test
+    @WithMockUser(username = "a", roles = "USER")
+    void bookTripShouldThrowExceptionWhenTravelPackageDoesNotExist() throws Exception {
+        CreateBookingDTO createBookingDTO = new CreateBookingDTO(-20L, LocalDate.of(2100, 1, 1), 1);
+
+        when(mockTravelPackageRepository.findById(-20L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(post("/booktrip")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createBookingDTO)))
+                .andExpect(status().isNotFound())
+                .andExpect(status().reason("TravelPackage with id -20 not found"));
+
+        ArgumentCaptor<CreateBookingDTO> dtoCaptor = ArgumentCaptor.forClass(CreateBookingDTO.class);
+        ArgumentCaptor<Principal> principalCaptor = ArgumentCaptor.forClass(Principal.class);
+
+        verify(travelBookingService).bookTrip(dtoCaptor.capture(), principalCaptor.capture());
+
+        CreateBookingDTO capturedDto = dtoCaptor.getValue();
+        Principal capturedPrincipal = principalCaptor.getValue();
+
+        assertEquals(-20L, capturedDto.getTravelPackageId());
+        assertEquals(1, capturedDto.getNumberOfWeeks());
+        assertEquals(LocalDate.of(2100, 1, 1), capturedDto.getStartDate());
+        assertEquals("a", capturedPrincipal.getName());
+
+        verify(mockTravelBookingRepository, never()).save(any());
+    }
+
+    @Test
+    @WithMockUser(username = "a", roles = "USER")
+    void bookTripShouldThrowExceptionWhenStartDateIsInThePast() throws Exception {
+        CreateBookingDTO createBookingDTO = new CreateBookingDTO(-1L, LocalDate.of(2000, 1, 1), 1);
+
+        when(mockTravelPackageRepository.findById(-1L)).thenReturn(Optional.of(travelPackage));
+
+        mockMvc.perform(post("/booktrip")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createBookingDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(status().reason("Start date must be in the future"));
+
+        ArgumentCaptor<CreateBookingDTO> dtoCaptor = ArgumentCaptor.forClass(CreateBookingDTO.class);
+        ArgumentCaptor<Principal> principalCaptor = ArgumentCaptor.forClass(Principal.class);
+
+        verify(travelBookingService).bookTrip(dtoCaptor.capture(), principalCaptor.capture());
+
+        CreateBookingDTO capturedDto = dtoCaptor.getValue();
+        Principal capturedPrincipal = principalCaptor.getValue();
+
+        assertEquals(-1L, capturedDto.getTravelPackageId());
+        assertEquals(1, capturedDto.getNumberOfWeeks());
+        assertEquals(LocalDate.of(2000, 1, 1), capturedDto.getStartDate());
+        assertEquals("a", capturedPrincipal.getName());
+
+        verify(mockTravelBookingRepository, never()).save(any());
+    }
+
 
     @Test
     @WithMockUser(username = "a", roles = "USER")
