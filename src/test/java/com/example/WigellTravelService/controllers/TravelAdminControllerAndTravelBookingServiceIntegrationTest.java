@@ -5,17 +5,20 @@ import com.example.WigellTravelService.entities.TravelCustomer;
 import com.example.WigellTravelService.entities.TravelPackage;
 import com.example.WigellTravelService.repositories.TravelBookingRepository;
 import com.example.WigellTravelService.services.TravelBookingService;
+import com.example.WigellTravelService.utils.CurrencyConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -37,10 +40,15 @@ class TravelAdminControllerAndTravelBookingServiceIntegrationTest {
     @MockitoBean
     private TravelBookingRepository mockTravelBookingRepository;
 
+    @MockitoBean
+    private CurrencyConverter currencyConverter;
+
     @MockitoSpyBean
     private TravelBookingService travelBookingService;
 
     private TravelBooking travelBooking;
+
+
 
     @BeforeEach
     void setUp() {
@@ -56,6 +64,8 @@ class TravelAdminControllerAndTravelBookingServiceIntegrationTest {
                 travelCustomer,
                 travelPackage
         );
+
+        when(currencyConverter.convertSekToEur(any())).thenReturn(new BigDecimal("630.00"));
     }
 
     @Test
@@ -95,6 +105,24 @@ class TravelAdminControllerAndTravelBookingServiceIntegrationTest {
         verify(mockTravelBookingRepository, times(1)).findByCancelledIsTrue();
     }
 
+    // Ensures API failure in CurrencyConverter results in 503 Service Unavailable
+    // This test represents all endpoints using CurrencyConverter – one failure case is enough.
+    @Test
+    @WithMockUser(username = "b", roles = "ADMIN")
+    void listCanceledBookingsShouldReturnBadGatewayWhenCurrencyApiFails() throws Exception {
+        travelBooking.setCancelled(true);
+        when(mockTravelBookingRepository.findByCancelledIsTrue()).thenReturn(List.of(travelBooking));
+        when(currencyConverter.convertSekToEur(any()))
+                .thenThrow(new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,"Error in converting SEK to EUR via API"));
+
+        mockMvc.perform(get("/listcanceled")
+                    .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isServiceUnavailable())
+                .andExpect(status().reason("Error in converting SEK to EUR via API"));
+
+        verify(currencyConverter, atLeastOnce()).convertSekToEur(any());
+    }
+
     @Test
     @WithMockUser(username = "b", roles = "ADMIN")
     void listUpcomingBookingsShouldListUpcomingBookings() throws Exception {
@@ -114,6 +142,8 @@ class TravelAdminControllerAndTravelBookingServiceIntegrationTest {
         verify(mockTravelBookingRepository, times(1)).findByStartDateGreaterThanEqualAndCancelledFalse(LocalDate.now());
     }
 
+    // Verifies access control – non-admin users receive 403 Forbidden.
+    // One representative test is enough to cover role-based restrictions.
     @Test
     @WithMockUser(username = "a", roles = "USER")
     void listCanceledBookingsShouldReturnForbiddenWhenUserRoleIsNotAdmin() throws Exception {

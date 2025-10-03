@@ -10,6 +10,7 @@ import com.example.WigellTravelService.repositories.TravelCustomerRepository;
 import com.example.WigellTravelService.repositories.TravelPackageRepository;
 import com.example.WigellTravelService.services.TravelBookingService;
 import com.example.WigellTravelService.services.TravelCustomerService;
+import com.example.WigellTravelService.utils.CurrencyConverter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -62,6 +63,9 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
     @MockitoBean
     private TravelPackageRepository mockTravelPackageRepository;
 
+    @MockitoBean
+    private CurrencyConverter mockCurrencyConverter;
+
     @MockitoSpyBean
     private TravelCustomerService travelCustomerService;
 
@@ -87,6 +91,7 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
                 travelPackage
         );
 
+        when(mockCurrencyConverter.convertSekToEur(any())).thenReturn(new BigDecimal("630.00"));
         when(mockTravelBookingRepository.save(any(TravelBooking.class))).thenReturn(travelBooking);
         when(mockTravelCustomerRepository.findByUsername("a")).thenReturn(Optional.of(travelCustomer));
     }
@@ -511,5 +516,16 @@ class TravelCustomerControllerAndTravelBookingServiceIntegrationTest {
                 .getMyBookings(any(Principal.class));
 
         verify(mockTravelBookingRepository, times(1)).findByTravelCustomerUsernameAndCancelledFalse("a");
+    }
+
+    // Verifies access control – ADMIN (or any non-USER role) receive 403 Forbidden.
+    // One representative test is enough to cover role-based restrictions.
+    @Test
+    @WithMockUser(username = "b", roles = "ADMIN")
+    void getMyBookingsShouldReturnForbiddenWhenUserRoleIsNotAdmin() throws Exception {
+
+        mockMvc.perform(get("/mybookings")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
     }
 }

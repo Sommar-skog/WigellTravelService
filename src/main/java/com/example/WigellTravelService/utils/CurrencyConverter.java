@@ -1,8 +1,10 @@
 package com.example.WigellTravelService.utils;
 
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -25,7 +27,7 @@ public class CurrencyConverter {
         Object result = response.get("result");
 
         if ( result == null){
-            throw new RuntimeException("Error in converting SEK to EUR via API");
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,"Error in converting SEK to EUR via API");
         }
 
         return new BigDecimal(result.toString());
