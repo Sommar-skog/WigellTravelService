@@ -9,8 +9,6 @@ import java.util.List;
 
 public interface TravelBookingService {
 
-    //TODO returnera och ta emot DAO
-
     TravelBooking bookTrip(CreateBookingDTO createBookingDTO, Principal principal);
 
     TravelBooking cancelTrip(CancelBookingDTO cancelBookingDTO, Principal principal);

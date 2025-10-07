@@ -9,8 +9,6 @@ import java.util.List;
 
 public interface TravelPackageService {
 
-    //TODO ta in och returnera DAO
-
     List<TravelPackage> getAllTravelPackages(String role);
 
     TravelPackage addTravelPackage(AddTravelPackageDTO addTravelPackageDTO);
