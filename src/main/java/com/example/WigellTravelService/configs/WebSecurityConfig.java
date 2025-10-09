@@ -58,5 +58,4 @@ public class WebSecurityConfig {
 
         return new InMemoryUserDetailsManager(admin, userOne, userTwo, userThree);
     }
-
 }

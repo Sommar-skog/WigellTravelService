@@ -4,7 +4,9 @@ public class CancelBookingDTO {
 
     private Long bookingId;
 
-    public CancelBookingDTO() {}
+    public CancelBookingDTO() {
+
+    }
 
     public CancelBookingDTO(Long bookingId) {
         this.bookingId = bookingId;

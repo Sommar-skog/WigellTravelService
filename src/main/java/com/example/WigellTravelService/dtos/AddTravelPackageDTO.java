@@ -11,6 +11,7 @@ public class AddTravelPackageDTO {
     public AddTravelPackageDTO() {
 
     }
+
     public AddTravelPackageDTO(String hotelName, String destination, BigDecimal weekPrice) {
         this.hotelName = hotelName;
         this.destination = destination;
