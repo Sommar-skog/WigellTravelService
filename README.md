@@ -1,7 +1,7 @@
 # WigellTravelService
 
-WigellTravelService is a **microservice** developed by Amanda Aronsson as part of the **Java Web Services group project**.  
-It manages travel packages and bookings and integrates with the **WigellGateway**, which Amanda Aronsson also built.  
+WigellTravelService is a **microservice** developed by **Amanda Aronsson** as part of the **Java Web Services group project**.  
+It manages travel packages and bookings and integrates with the **WigellGateway**, which **Amanda Aronsson** also built.  
 The service runs in a **Docker network** together with its own **MySQL container** and uses **Spring Boot with Basic Security**.
 
 ---
