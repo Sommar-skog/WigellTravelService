@@ -13,7 +13,7 @@ The service runs in a **Docker network** together with its own **MySQL container
 - **Database:** MySQL (Docker container)
 - **Security:** Spring Security (Basic Auth)
 - **External API:** Currency Converter from [API Plugin](https://apiplugin.com/)
-
+- **Docker:** Containerized and connected to the shared `wigell-network`
 - **Ports:**
     - Travel Service → `8585`
     - Gateway → `4545`
@@ -35,10 +35,10 @@ The service runs in a **Docker network** together with its own **MySQL container
 
 ##  Related Projects
 
-| Project | Description |
-|----------|-------------|
-| [WigellGateway](https://github.com/Sommar-skog/WigellGateway) | API Gateway that routes requests to the microservices |
-| MySQL Container | Database container connected in the same Docker network |
+| Project                                                       | Description                                             | Developer         |
+|---------------------------------------------------------------|---------------------------------------------------------|-------------------|
+| [WigellGateway](https://github.com/Sommar-skog/WigellGateway) | API Gateway that routes requests to the microservices   | Amanda Aronsson   |
+| MySQL Container                                               | Database container connected in the same Docker network | Amanda Aronsson   |
 
 ---
 
@@ -48,7 +48,7 @@ This project uses a public **Currency Converter API** provided by [API Plugin](h
 to calculate and display travel prices in both **SEK** and **EUR**.
 
 ---
-## Example Endpoints
+##  Endpoints
 
 ### Customer
 
@@ -66,3 +66,17 @@ to calculate and display travel prices in both **SEK** and **EUR**.
 - POST /api/wigelltravels/v1/addtravel – Add new TravelPackage
 - PUT /api/wigelltravels/v1/updatetravel – Update TravelPackage
 - PUT /api/wigelltravels/v1/removetravel/{id} – Set TravelPackage to inactive
+
+---
+
+## Running the Service
+
+WigellTravelService can be built, containerized, and added to the shared Docker network automatically using the provided script:
+
+[script.bat](./script.bat)
+
+This script:
+- Builds the WigellTravelService project using Maven
+- Creates a Docker image for WigellTravelService
+- Connects the container to the existing `wigell-network`
+- Runs the service on port **8585**
